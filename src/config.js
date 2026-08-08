@@ -1,20 +1,16 @@
 require("dotenv").config();
 
-function parseJsonEnv(name, fallback) {
-  const raw = process.env[name];
-  if (!raw || raw.trim() === "") return fallback;
-
-  try {
-    return JSON.parse(raw);
-  } catch (error) {
-    throw new Error(`${name} must be valid JSON: ${error.message}`);
-  }
-}
-
 function getBoolean(name, fallback = false) {
   const raw = process.env[name];
   if (raw === undefined || raw === "") return fallback;
   return ["1", "true", "yes", "on"].includes(raw.toLowerCase());
+}
+
+function listEnv(name) {
+  return (process.env[name] || "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
 }
 
 const config = {
@@ -22,19 +18,35 @@ const config = {
   clientId: process.env.CLIENT_ID,
   guildId: process.env.GUILD_ID,
   communityName: process.env.COMMUNITY_NAME || "Pancheesko",
-  communityTagline: process.env.COMMUNITY_TAGLINE || "Games, music, and good company.",
+  communityTagline: process.env.COMMUNITY_TAGLINE || "",
   channels: {
-    welcome: process.env.WELCOME_CHANNEL_ID,
+    mail: process.env.MAIL_CHANNEL_ID,
     intro: process.env.INTRO_CHANNEL_ID,
-    memberLog: process.env.MEMBER_LOG_CHANNEL_ID,
+    verify: process.env.VERIFY_CHANNEL_ID,
+    memberLog: process.env.LOG_CHANNEL_ID,
     modLog: process.env.MOD_LOG_CHANNEL_ID,
     rules: process.env.RULES_CHANNEL_ID,
     roles: process.env.ROLES_CHANNEL_ID,
-    announcements: process.env.ANNOUNCEMENTS_CHANNEL_ID,
-    events: process.env.EVENTS_CHANNEL_ID,
+    general: process.env.GENERAL_CHANNEL_ID,
+    media: process.env.MEDIA_CHANNEL_ID,
+    gaming: process.env.GAMING_CHANNEL_ID,
+    art: process.env.ART_CHANNEL_ID,
+    clips: process.env.CLIPS_CHANNEL_ID,
+    vent: process.env.VENT_CHANNEL_ID,
+    bots: process.env.BOTS_CHANNEL_ID,
     music: process.env.MUSIC_CHANNEL_ID,
-    lfg: process.env.LFG_CHANNEL_ID,
-    support: process.env.SUPPORT_CHANNEL_ID
+    birthday: process.env.BIRTHDAY_CHANNEL_ID,
+    overwatch: process.env.OVERWATCH_CHANNEL_ID,
+    deadlock: process.env.DEADLOCK_CHANNEL_ID,
+    dbd: process.env.DBD_CHANNEL_ID,
+    robloxUser: process.env.ROBLOX_USER_CHANNEL_ID
+  },
+  channelMap: {
+    main: ["rules", "mail", "roles", "verify", "intro", "secret", "tiktok", "log"],
+    "001": ["general", "media", "gaming", "pets-woof-meow", "art", "clips", "vent", "roleplay"],
+    "002": ["bots", "music", "mudae", "bump", "userphone", "birthday"],
+    "003": ["overwatch", "deadlock", "dbd", "bnet-id", "steam-id", "roblox-user"],
+    "004": ["voicechat", "cool kids", "overwatch", "deadlock", "dbd", "music", "karaoke", "super secret tickle time"]
   },
   links: {
     website: process.env.WEBSITE_URL,
@@ -51,10 +63,20 @@ const config = {
     scanOnReady: getBoolean("AUTO_BAN_SCAN_ON_READY", false),
     dryRun: getBoolean("AUTO_BAN_DRY_RUN", false)
   },
-  roles: {
-    buttonSets: parseJsonEnv("BUTTON_ROLE_SETS", []),
-    selectMenus: parseJsonEnv("SELECT_ROLE_MENUS", []),
-    reactionSets: parseJsonEnv("REACTION_ROLE_SETS", [])
+  onboarding: {
+    memberRoleId: process.env.MEMBER_ROLE_ID,
+    unverifiedRoleId: process.env.UNVERIFIED_ROLE_ID,
+    roleIds: {
+      gamer: process.env.GAMER_ROLE_ID,
+      music: process.env.MUSIC_ROLE_ID,
+      art: process.env.ART_ROLE_ID,
+      media: process.env.MEDIA_ROLE_ID,
+      overwatch: process.env.OVERWATCH_ROLE_ID,
+      deadlock: process.env.DEADLOCK_ROLE_ID,
+      dbd: process.env.DBD_ROLE_ID,
+      birthday: process.env.BIRTHDAY_ROLE_ID
+    },
+    extraRoleIds: listEnv("EXTRA_ROLE_IDS")
   }
 };
 

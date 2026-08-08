@@ -1,51 +1,49 @@
 const { PermissionFlagsBits, SlashCommandBuilder } = require("discord.js");
-const { baseEmbed, colors, introductionEmbed } = require("../../utils/embeds");
-const { buildButtonRoleRows, buildSelectRoleRows } = require("../../utils/roles");
+const { introPromptEmbed, rolesEmbed, verifyEmbed } = require("../../utils/embeds");
+const { verifyButtonRow } = require("../../utils/onboarding");
+const { roleSelectRow } = require("../../utils/roles");
+const { sendToChannel } = require("../../utils/logging");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("setup")
-    .setDescription("Post configured community setup messages.")
+    .setDescription("Post the bot-led onboarding messages.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .addSubcommand((subcommand) =>
       subcommand
-        .setName("welcome")
-        .setDescription("Post the welcome/introduction message in this channel.")
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("roles")
-        .setDescription("Post configured button and select-menu role panels in this channel.")
+        .setName("onboarding")
+        .setDescription("Post verify, roles, and intro messages to the configured channels.")
     ),
   async execute(interaction, client) {
-    const subcommand = interaction.options.getSubcommand();
     await interaction.deferReply({ ephemeral: true });
 
-    if (subcommand === "welcome") {
-      await interaction.channel.send({ embeds: [introductionEmbed(client)] });
-      await interaction.editReply("Welcome/introduction message posted.");
-      return;
-    }
+    const verifyMessage = await sendToChannel(client, client.config.channels.verify, {
+      embeds: [verifyEmbed(client)],
+      components: [verifyButtonRow(client)]
+    });
 
-    const buttonRows = buildButtonRoleRows(client.config.roles.buttonSets);
-    const selectRows = buildSelectRoleRows(client.config.roles.selectMenus);
-    const panels = [...buttonRows, ...selectRows];
+    const roleRow = roleSelectRow(client.config);
+    const rolesMessage = roleRow
+      ? await sendToChannel(client, client.config.channels.roles, {
+          embeds: [rolesEmbed(client)],
+          components: [roleRow]
+        })
+      : null;
 
-    if (!panels.length) {
-      const embed = baseEmbed(client, { color: colors.info })
-        .setTitle("No role panels configured")
-        .setDescription("Add BUTTON_ROLE_SETS or SELECT_ROLE_MENUS to the environment, then run this command again.");
-      await interaction.editReply({ embeds: [embed] });
-      return;
-    }
+    const introMessage = await sendToChannel(client, client.config.channels.intro, {
+      embeds: [introPromptEmbed(client)]
+    });
 
-    for (const panel of panels) {
-      await interaction.channel.send({
-        content: panel.message,
-        components: [panel.row]
-      });
-    }
+    const posted = [
+      verifyMessage && "verify",
+      rolesMessage && "roles",
+      introMessage && "intro"
+    ].filter(Boolean);
 
-    await interaction.editReply(`Posted ${panels.length} role panel${panels.length === 1 ? "" : "s"}.`);
+    await interaction.editReply(
+      posted.length
+        ? `Posted onboarding messages: ${posted.join(", ")}.`
+        : "No onboarding messages were posted. Check your channel IDs and role IDs."
+    );
   }
 };

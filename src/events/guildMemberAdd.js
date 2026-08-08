@@ -6,10 +6,15 @@ const { safeBanMinus15 } = require("../utils/moderation");
 module.exports = {
   name: Events.GuildMemberAdd,
   async execute(member, client) {
-    await sendToChannel(client, client.config.channels.welcome, {
+    await sendToChannel(client, client.config.channels.mail, {
       content: `Welcome ${member}!`,
       embeds: [welcomeEmbed(member, client)]
     });
+
+    if (client.config.onboarding.unverifiedRoleId) {
+      const role = member.guild.roles.cache.get(client.config.onboarding.unverifiedRoleId);
+      if (role) await member.roles.add(role, "New member pending bot onboarding");
+    }
 
     await logMemberEvent(
       client,

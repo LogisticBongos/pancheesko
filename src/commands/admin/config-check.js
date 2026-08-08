@@ -15,9 +15,9 @@ module.exports = {
       .setTitle("Pancheesko config check")
       .addFields(
         { name: "Channels", value: channelStatus || "None" },
-        { name: "Button role sets", value: `${client.config.roles.buttonSets.length}`, inline: true },
-        { name: "Select menus", value: `${client.config.roles.selectMenus.length}`, inline: true },
-        { name: "Reaction roles", value: `${client.config.roles.reactionSets.length}`, inline: true },
+        { name: "Member role", value: client.config.onboarding.memberRoleId ? "Configured" : "Missing", inline: true },
+        { name: "Unverified role", value: client.config.onboarding.unverifiedRoleId ? "Configured" : "Optional / missing", inline: true },
+        { name: "Selectable roles", value: `${Object.values(client.config.onboarding.roleIds).filter(Boolean).length}`, inline: true },
         { name: "Minus-15 auto-ban", value: client.config.autoBan.minus15RoleId ? `Configured${client.config.autoBan.dryRun ? " (dry run)" : ""}` : "Missing role ID", inline: true }
       );
 

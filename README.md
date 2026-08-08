@@ -1,28 +1,31 @@
 # Pancheesko Discord Bot
 
-A modular JavaScript Discord bot for the Pancheesko games-and-music community. It uses `discord.js` slash commands, environment-based configuration, attractive embeds, configurable role panels, join/leave logging, moderation tools, and guarded `-15` role auto-ban handling.
+A simple `discord.js` bot for running Pancheesko's welcome, verification, roles, logs, community commands, and moderation.
 
-## Features
+## What It Does
 
-- Slash-command architecture with commands grouped by purpose.
-- Button, select-menu, and reaction role support.
-- Welcome and introduction embeds.
-- Member join/leave logging.
-- Moderation commands: ban, kick, timeout, untimeout, warn, purge, slowmode, and unban.
-- Configurable `-15` role auto-ban with safeguards:
-  - Requires an exact role ID.
-  - Confirms the role name matches `AUTO_BAN_MINUS15_ROLE_NAME`.
-  - Skips bots, server owner, elevated members, and members the bot cannot moderate.
-  - Supports dry-run mode and manual preview scans.
-- Community commands for links, LFG posts, event cards, polls, and recommendations.
+- Posts a bot-led onboarding flow with `/setup onboarding`.
+- Welcomes new members in `mail`.
+- Adds an optional unverified role when someone joins.
+- Lets people verify through a button and intro form.
+- Posts completed intros in `intro`.
+- Gives the member role after verification.
+- Lets people choose community roles in `roles`.
+- Logs joins/leaves and moderation actions.
+- Keeps the guarded `-15` auto-ban system.
+- Includes moderation and community commands.
 
-This bot intentionally does not pretend to replace external services such as music streaming, ticketing, CRM tools, or paid moderation dashboards. It includes Discord-native workflows and clean places to connect external integrations later.
+## Your Server Layout
 
-## Requirements
+This repo is based around the channel list you sent:
 
-- Node.js 20 or newer.
-- A Discord application and bot token.
-- A Discord server where you can invite the bot with the needed permissions.
+- Main: `rules`, `mail`, `roles`, `verify`, `intro`, `secret`, `tiktok`, `log`
+- `001`: `general`, `media`, `gaming`, `pets-woof-meow`, `art`, `clips`, `vent`, `roleplay`
+- `002`: `bots`, `music`, `mudae`, `bump`, `userphone`, `birthday`
+- `003`: `overwatch`, `deadlock`, `dbd`, `bnet-id`, `steam-id`, `roblox-user`
+- `004`: `voicechat`, `cool kids`, `overwatch`, `deadlock`, `dbd`, `music`, `karaoke`, `super secret tickle time`
+
+Put the real channel IDs into `.env`.
 
 ## Setup
 
@@ -32,113 +35,127 @@ This bot intentionally does not pretend to replace external services such as mus
    pnpm install
    ```
 
-2. Copy the example environment file:
+2. Copy `.env.example` to `.env`.
 
-   ```bash
-   cp .env.example .env
-   ```
-
-3. Fill in at least:
+3. Fill in:
 
    ```env
-   DISCORD_TOKEN=your-bot-token
-   CLIENT_ID=your-application-client-id
-   GUILD_ID=your-test-server-id
+   DISCORD_TOKEN=
+   CLIENT_ID=
+   GUILD_ID=
+   MAIL_CHANNEL_ID=
+   VERIFY_CHANNEL_ID=
+   ROLES_CHANNEL_ID=
+   INTRO_CHANNEL_ID=
+   LOG_CHANNEL_ID=
+   MEMBER_ROLE_ID=
    ```
 
-4. In the Discord Developer Portal, enable these privileged gateway intents for the bot:
-
-   - Server Members Intent
-   - Message Content Intent, only needed for reaction-role reliability around partial cached messages
-
-5. Invite the bot with permissions for slash commands, reading/sending messages, managing roles, moderating members, kicking, banning, managing messages, and viewing channels. The bot role must be above any roles it assigns or moderates.
-
-6. Register slash commands:
+4. Register commands:
 
    ```bash
    pnpm run deploy:commands
    ```
 
-7. Start the bot:
+5. Start the bot:
 
    ```bash
    pnpm start
    ```
 
-## Configuration
+6. In Discord, run:
 
-All secrets and server-specific IDs live in `.env`. Keep `.env` private and commit only `.env.example`.
+   ```text
+   /setup onboarding
+   ```
 
-Important options:
+That posts the verify button in `verify`, the role selector in `roles`, and the intro prompt in `intro`.
 
-- `WELCOME_CHANNEL_ID`, `INTRO_CHANNEL_ID`, `MEMBER_LOG_CHANNEL_ID`, `MOD_LOG_CHANNEL_ID`
-- `RULES_CHANNEL_ID`, `ROLES_CHANNEL_ID`, `EVENTS_CHANNEL_ID`, `MUSIC_CHANNEL_ID`, `LFG_CHANNEL_ID`
-- `AUTO_BAN_MINUS15_ROLE_ID`
-- `AUTO_BAN_DRY_RUN=true` while testing
-- `AUTO_BAN_SCAN_ON_READY=false` by default for safety
+## Editing Embed Messages
 
-### Button Roles
+Edit:
 
-```env
-BUTTON_ROLE_SETS=[{"message":"Pick your pings.","roles":[{"label":"Events","roleId":"1234567890","emoji":"🎮"},{"label":"Music","roleId":"2345678901","emoji":"🎵"}]}]
+```text
+src/utils/embeds.js
 ```
 
-Run `/setup roles` in the channel where you want the panel.
+Near the top is `embedText`. The title/description fields are intentionally blank and commented so you can fill them in without hunting through the code.
 
-### Select-Menu Roles
+Example:
 
-```env
-SELECT_ROLE_MENUS=[{"message":"Choose your community roles.","placeholder":"Pick roles","min":0,"max":3,"roles":[{"label":"FPS","roleId":"1234567890","description":"Shooter games"},{"label":"Producer","roleId":"2345678901","description":"Music makers"}]}]
+```js
+verify: {
+  title: "", // This becomes .setTitle("...") on the verify embed.
+  description: "", // Explain what clicking the verify button does.
+  buttonLabel: "" // Button text. Blank uses "Start verification".
+}
 ```
 
-Run `/setup roles` in the channel where you want the menu.
+You can change it to:
 
-### Reaction Roles
-
-```env
-REACTION_ROLE_SETS=[{"messageId":"1234567890","emoji":"🎮","roleId":"2345678901","removeOnUnreact":true}]
+```js
+verify: {
+  title: "Verify",
+  description: "Click the button below, answer the intro form, and you will get access.",
+  buttonLabel: "Start"
+}
 ```
 
-Reaction roles bind to existing messages. Use custom emoji IDs for custom emoji, or the visible emoji character for standard emoji.
+Restart the bot after editing embed text. You only need to run `pnpm run deploy:commands` again if you edit slash command names, descriptions, or options.
+
+## Role Setup
+
+The verify form gives `MEMBER_ROLE_ID`.
+
+The role selector in `roles` uses these optional IDs:
+
+- `GAMER_ROLE_ID`
+- `MUSIC_ROLE_ID`
+- `ART_ROLE_ID`
+- `MEDIA_ROLE_ID`
+- `OVERWATCH_ROLE_ID`
+- `DEADLOCK_ROLE_ID`
+- `DBD_ROLE_ID`
+- `BIRTHDAY_ROLE_ID`
+
+Leave any of them blank to hide that option.
 
 ## `-15` Auto-Ban
 
-Set `AUTO_BAN_MINUS15_ROLE_ID` to the exact role ID for the `-15` role. The bot also checks that the role name equals `AUTO_BAN_MINUS15_ROLE_NAME`, which defaults to `-15`.
+Set:
+
+```env
+AUTO_BAN_MINUS15_ROLE_ID=
+AUTO_BAN_MINUS15_ROLE_NAME=-15
+AUTO_BAN_DRY_RUN=true
+```
 
 Recommended rollout:
 
-1. Set `AUTO_BAN_DRY_RUN=true`.
+1. Keep `AUTO_BAN_DRY_RUN=true`.
 2. Run `/config-check`.
-3. Run `/scan-minus15` without `execute` to preview matches.
-4. Run `/scan-minus15 execute:true` only when the preview looks correct.
-5. Set `AUTO_BAN_DRY_RUN=false` when ready.
+3. Run `/scan-minus15` to preview.
+4. Run `/scan-minus15 execute:true` when ready.
+5. Set `AUTO_BAN_DRY_RUN=false` after testing.
 
-The bot automatically bans members when the configured role is newly added. Startup scanning is off by default; enable `AUTO_BAN_SCAN_ON_READY=true` only after testing.
+The bot checks the exact role ID and role name, skips bots/elevated members, and only bans people the bot can actually moderate.
 
 ## Commands
 
+- Setup: `/setup onboarding`, `/config-check`, `/scan-minus15`
 - General: `/ping`, `/server`, `/user`, `/avatar`, `/links`
 - Community: `/lfg`, `/recommend`, `/poll`, `/event`
-- Setup/admin: `/setup welcome`, `/setup roles`, `/config-check`, `/scan-minus15`
 - Moderation: `/ban`, `/kick`, `/timeout`, `/untimeout`, `/warn`, `/purge`, `/slowmode`, `/unban`
 
-## Development
-
-Check syntax and command loading:
+## Check The Code
 
 ```bash
 pnpm run check
 ```
 
-Run locally with file watching:
-
-```bash
-pnpm run dev
-```
-
 ## Free Always-On Hosting
 
-For a free always-on option, use Oracle Cloud Free Tier with an Always Free VM, install Node.js 20, clone this repo, add the `.env` file on the server, and run the bot with `pm2`:
+Use an Oracle Cloud Free Tier Always Free VM if you want a no-cost bot that stays online. Install Node.js 20, clone the repo, fill in `.env`, then run it with `pm2`:
 
 ```bash
 pnpm install --prod
@@ -147,5 +164,3 @@ pm2 start src/index.js --name pancheesko
 pm2 save
 pm2 startup
 ```
-
-Render, Railway, and Fly.io are easier to use, but their free tiers and sleep behavior change over time. Oracle Cloud Free Tier is the best fit when the priority is a no-cost bot that stays online continuously.
