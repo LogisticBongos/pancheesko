@@ -10,7 +10,7 @@ A simple `discord.js` bot for running Pancheesko's welcome, verification, roles,
 - Lets people verify through a button and intro form.
 - Posts completed intros in `intro`.
 - Gives the member role after verification.
-- Lets people choose community roles in `roles`.
+- Posts game and color role menus in `roles`.
 - Logs joins/leaves and moderation actions.
 - Keeps the guarded `-15` auto-ban system.
 - Includes moderation and community commands.
@@ -69,7 +69,15 @@ Put the real channel IDs into `.env`.
    /setup onboarding
    ```
 
-That posts the verify button in `verify`, the role selector in `roles`, and the intro prompt in `intro`.
+That posts the verify button in `verify` and the intro prompt in `intro`.
+
+7. Then run:
+
+   ```text
+   /setup roles
+   ```
+
+That posts the game role menu and color role menu in `roles`.
 
 ## Editing Embed Messages
 
@@ -107,18 +115,41 @@ Restart the bot after editing embed text. You only need to run `pnpm run deploy:
 
 The verify form gives `MEMBER_ROLE_ID`.
 
-The role selector in `roles` uses these optional IDs:
+The bot does not ask role questions during onboarding. Roles live in `roles`.
 
-- `GAMER_ROLE_ID`
-- `MUSIC_ROLE_ID`
-- `ART_ROLE_ID`
-- `MEDIA_ROLE_ID`
-- `OVERWATCH_ROLE_ID`
+Game roles are multi-select:
+
 - `DEADLOCK_ROLE_ID`
+- `LEAGUE_ROLE_ID`
+- `ROBLOX_ROLE_ID`
+- `MINECRAFT_ROLE_ID`
+- `OVERWATCH_ROLE_ID`
+- `FORTNITE_ROLE_ID`
+- `MARVEL_RIVALS_ROLE_ID`
+- `GENSHIN_ROLE_ID`
 - `DBD_ROLE_ID`
-- `BIRTHDAY_ROLE_ID`
+
+Color roles are single-choice:
+
+- `RED_COLOR_ROLE_ID`
+- `DARK_RED_COLOR_ROLE_ID`
+- `ORANGE_COLOR_ROLE_ID`
+- `YELLOW_COLOR_ROLE_ID`
+- `GREEN_COLOR_ROLE_ID`
+- `DARK_GREEN_COLOR_ROLE_ID`
+- `BLUE_COLOR_ROLE_ID`
+- `DARK_BLUE_COLOR_ROLE_ID`
+- `LILAC_COLOR_ROLE_ID`
+- `PURPLE_COLOR_ROLE_ID`
+- `PINK_COLOR_ROLE_ID`
+- `BLACK_COLOR_ROLE_ID`
+- `WHITE_COLOR_ROLE_ID`
 
 Leave any of them blank to hide that option.
+
+To add another game later, add a new env value in `.env.example`, add it to `roleGroups.games` in `src/config.js`, then rerun `/setup roles`.
+
+Future role groups like movie night can be added as another group in the same `roleGroups` area when you make those channels/roles.
 
 ## `-15` Auto-Ban
 
@@ -142,7 +173,7 @@ The bot checks the exact role ID and role name, skips bots/elevated members, and
 
 ## Commands
 
-- Setup: `/setup onboarding`, `/config-check`, `/scan-minus15`
+- Setup: `/setup onboarding`, `/setup roles`, `/config-check`, `/scan-minus15`
 - General: `/ping`, `/server`, `/user`, `/avatar`, `/links`
 - Community: `/lfg`, `/recommend`, `/poll`, `/event`
 - Moderation: `/ban`, `/kick`, `/timeout`, `/untimeout`, `/warn`, `/purge`, `/slowmode`, `/unban`

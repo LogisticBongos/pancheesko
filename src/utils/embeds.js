@@ -26,6 +26,14 @@ const embedText = {
     title: "", // This becomes .setTitle("...") on the roles embed.
     description: "" // Explain which roles people can choose.
   },
+  gameRoles: {
+    title: "", // This becomes .setTitle("...") above the game role menu.
+    description: "" // Explain that people can choose more than one game role.
+  },
+  colorRoles: {
+    title: "", // This becomes .setTitle("...") above the color role menu.
+    description: "" // Explain that people can only choose one color role.
+  },
   intro: {
     title: "", // This becomes .setTitle("...") on the intro embed.
     description: "" // Explain what should go in intros.
@@ -69,6 +77,11 @@ function rolesEmbed(client) {
   return applyText(baseEmbed(client, { color: colors.info }), embedText.roles);
 }
 
+function roleGroupEmbed(client, group) {
+  const text = group === "colors" ? embedText.colorRoles : embedText.gameRoles;
+  return applyText(baseEmbed(client, { color: colors.info }), text);
+}
+
 function introPromptEmbed(client) {
   return applyText(baseEmbed(client, { color: colors.info }), embedText.intro);
 }
@@ -89,6 +102,7 @@ module.exports = {
   embedText,
   introPromptEmbed,
   logEmbed,
+  roleGroupEmbed,
   rolesEmbed,
   verifiedEmbed,
   verifyEmbed,

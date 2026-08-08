@@ -1,7 +1,7 @@
 const { Events } = require("discord.js");
 const { colors, logEmbed } = require("../utils/embeds");
 const { logModeration } = require("../utils/logging");
-const { ROLE_SELECT_ID, updateSelectedRoles } = require("../utils/roles");
+const { ROLE_GROUP_SELECT_PREFIX, updateRoleGroup } = require("../utils/roles");
 const { INTRO_MODAL_ID, VERIFY_BUTTON_ID, finishVerification, startVerification } = require("../utils/onboarding");
 
 module.exports = {
@@ -13,8 +13,8 @@ module.exports = {
         return;
       }
 
-      if (interaction.isStringSelectMenu() && interaction.customId === ROLE_SELECT_ID) {
-        await updateSelectedRoles(interaction);
+      if (interaction.isStringSelectMenu() && interaction.customId.startsWith(ROLE_GROUP_SELECT_PREFIX)) {
+        await updateRoleGroup(interaction);
         return;
       }
 
