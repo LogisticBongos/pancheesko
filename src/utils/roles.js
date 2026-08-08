@@ -3,46 +3,70 @@ const {
   StringSelectMenuBuilder
 } = require("discord.js");
 
-const ROLE_SELECT_ID = "onboarding_roles";
+const ROLE_GROUP_SELECT_PREFIX = "role_group:";
 
-function configuredRoleOptions(config) {
-  const roles = [
-    ["gamer", "Gamer", "Games, LFG, clips, and gaming chat"],
-    ["music", "Music", "Music chat, playlists, karaoke, and listening rooms"],
-    ["art", "Art", "Art, edits, creative posts, and media"],
-    ["media", "Media", "Media, clips, TikTok, and screenshots"],
-    ["overwatch", "Overwatch", "Overwatch channel access or pings"],
-    ["deadlock", "Deadlock", "Deadlock channel access or pings"],
-    ["dbd", "DBD", "Dead by Daylight channel access or pings"],
-    ["birthday", "Birthday", "Birthday pings and birthday channel stuff"]
-  ];
-
-  return roles
-    .map(([key, label, description]) => ({
-      label,
-      value: config.onboarding.roleIds[key],
-      description
-    }))
-    .filter((role) => role.value);
+function configuredRoles(group) {
+  return group.filter((role) => role.roleId);
 }
 
-function roleSelectRow(config) {
-  const options = configuredRoleOptions(config);
-  if (!options.length) return null;
+function roleGroupRow(groupName, roles, options = {}) {
+  const configured = configuredRoles(roles);
+  if (!configured.length) return null;
 
   const select = new StringSelectMenuBuilder()
-    .setCustomId(ROLE_SELECT_ID)
-    .setPlaceholder("Pick your roles")
+    .setCustomId(`${ROLE_GROUP_SELECT_PREFIX}${groupName}`)
+    .setPlaceholder(options.placeholder || "Pick roles")
     .setMinValues(0)
-    .setMaxValues(Math.min(options.length, 8))
-    .addOptions(options);
+    .setMaxValues(options.singleChoice ? 1 : Math.min(configured.length, 25))
+    .addOptions(
+      configured.map((role) => ({
+        label: role.label,
+        value: role.roleId
+      }))
+    );
 
   return new ActionRowBuilder().addComponents(select);
 }
 
-async function updateSelectedRoles(interaction) {
-  const options = configuredRoleOptions(interaction.client.config);
-  const managedRoleIds = options.map((role) => role.value);
+function rolePanels(config) {
+  const panels = [];
+
+  const gameRow = roleGroupRow("games", config.roleGroups.games, {
+    placeholder: "Pick your game roles"
+  });
+  if (gameRow) {
+    panels.push({
+      group: "games",
+      row: gameRow,
+      singleChoice: false
+    });
+  }
+
+  const colorRow = roleGroupRow("colors", config.roleGroups.colors, {
+    placeholder: "Pick one color role",
+    singleChoice: true
+  });
+  if (colorRow) {
+    panels.push({
+      group: "colors",
+      row: colorRow,
+      singleChoice: true
+    });
+  }
+
+  return panels;
+}
+
+async function updateRoleGroup(interaction) {
+  const groupName = interaction.customId.slice(ROLE_GROUP_SELECT_PREFIX.length);
+  const group = interaction.client.config.roleGroups[groupName];
+
+  if (!group) {
+    await interaction.reply({ content: "That role menu is not configured anymore.", ephemeral: true });
+    return;
+  }
+
+  const managedRoleIds = configuredRoles(group).map((role) => role.roleId);
   const selectedRoleIds = interaction.values;
 
   for (const roleId of managedRoleIds) {
@@ -50,9 +74,9 @@ async function updateSelectedRoles(interaction) {
     if (!role) continue;
 
     if (selectedRoleIds.includes(roleId)) {
-      await interaction.member.roles.add(role, "Selected during bot onboarding");
+      await interaction.member.roles.add(role, `Selected ${groupName} role`);
     } else {
-      await interaction.member.roles.remove(role, "Removed during bot onboarding");
+      await interaction.member.roles.remove(role, `Updated ${groupName} roles`);
     }
   }
 
@@ -63,7 +87,7 @@ async function updateSelectedRoles(interaction) {
 }
 
 module.exports = {
-  ROLE_SELECT_ID,
-  roleSelectRow,
-  updateSelectedRoles
+  ROLE_GROUP_SELECT_PREFIX,
+  rolePanels,
+  updateRoleGroup
 };

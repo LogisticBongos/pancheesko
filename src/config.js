@@ -6,13 +6,6 @@ function getBoolean(name, fallback = false) {
   return ["1", "true", "yes", "on"].includes(raw.toLowerCase());
 }
 
-function listEnv(name) {
-  return (process.env[name] || "")
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
 const config = {
   token: process.env.DISCORD_TOKEN,
   clientId: process.env.CLIENT_ID,
@@ -27,18 +20,27 @@ const config = {
     modLog: process.env.MOD_LOG_CHANNEL_ID,
     rules: process.env.RULES_CHANNEL_ID,
     roles: process.env.ROLES_CHANNEL_ID,
+    secret: process.env.SECRET_CHANNEL_ID,
+    tiktok: process.env.TIKTOK_CHANNEL_ID,
     general: process.env.GENERAL_CHANNEL_ID,
     media: process.env.MEDIA_CHANNEL_ID,
     gaming: process.env.GAMING_CHANNEL_ID,
+    pets: process.env.PETS_CHANNEL_ID,
     art: process.env.ART_CHANNEL_ID,
     clips: process.env.CLIPS_CHANNEL_ID,
     vent: process.env.VENT_CHANNEL_ID,
+    roleplay: process.env.ROLEPLAY_CHANNEL_ID,
     bots: process.env.BOTS_CHANNEL_ID,
     music: process.env.MUSIC_CHANNEL_ID,
+    mudae: process.env.MUDAE_CHANNEL_ID,
+    bump: process.env.BUMP_CHANNEL_ID,
+    userphone: process.env.USERPHONE_CHANNEL_ID,
     birthday: process.env.BIRTHDAY_CHANNEL_ID,
     overwatch: process.env.OVERWATCH_CHANNEL_ID,
     deadlock: process.env.DEADLOCK_CHANNEL_ID,
     dbd: process.env.DBD_CHANNEL_ID,
+    bnetId: process.env.BNET_ID_CHANNEL_ID,
+    steamId: process.env.STEAM_ID_CHANNEL_ID,
     robloxUser: process.env.ROBLOX_USER_CHANNEL_ID
   },
   channelMap: {
@@ -65,18 +67,38 @@ const config = {
   },
   onboarding: {
     memberRoleId: process.env.MEMBER_ROLE_ID,
-    unverifiedRoleId: process.env.UNVERIFIED_ROLE_ID,
-    roleIds: {
-      gamer: process.env.GAMER_ROLE_ID,
-      music: process.env.MUSIC_ROLE_ID,
-      art: process.env.ART_ROLE_ID,
-      media: process.env.MEDIA_ROLE_ID,
-      overwatch: process.env.OVERWATCH_ROLE_ID,
-      deadlock: process.env.DEADLOCK_ROLE_ID,
-      dbd: process.env.DBD_ROLE_ID,
-      birthday: process.env.BIRTHDAY_ROLE_ID
-    },
-    extraRoleIds: listEnv("EXTRA_ROLE_IDS")
+    unverifiedRoleId: process.env.UNVERIFIED_ROLE_ID
+  },
+  roleGroups: {
+    games: [
+      { key: "deadlock", label: "deadlock", roleId: process.env.DEADLOCK_ROLE_ID },
+      { key: "league", label: "league of legends", roleId: process.env.LEAGUE_ROLE_ID },
+      { key: "roblox", label: "roblox", roleId: process.env.ROBLOX_ROLE_ID },
+      { key: "minecraft", label: "minecraft", roleId: process.env.MINECRAFT_ROLE_ID },
+      { key: "overwatch", label: "overwatch", roleId: process.env.OVERWATCH_ROLE_ID },
+      { key: "fortnite", label: "fortnite", roleId: process.env.FORTNITE_ROLE_ID },
+      { key: "marvelRivals", label: "marvel rivals", roleId: process.env.MARVEL_RIVALS_ROLE_ID },
+      { key: "genshin", label: "genshin", roleId: process.env.GENSHIN_ROLE_ID },
+      { key: "dbd", label: "DBD", roleId: process.env.DBD_ROLE_ID }
+    ],
+    colors: [
+      { key: "red", label: "red", roleId: process.env.RED_COLOR_ROLE_ID },
+      { key: "darkRed", label: "dark red", roleId: process.env.DARK_RED_COLOR_ROLE_ID },
+      { key: "orange", label: "orange", roleId: process.env.ORANGE_COLOR_ROLE_ID },
+      { key: "yellow", label: "yellow", roleId: process.env.YELLOW_COLOR_ROLE_ID },
+      { key: "green", label: "green", roleId: process.env.GREEN_COLOR_ROLE_ID },
+      { key: "darkGreen", label: "dark green", roleId: process.env.DARK_GREEN_COLOR_ROLE_ID },
+      { key: "blue", label: "blue", roleId: process.env.BLUE_COLOR_ROLE_ID },
+      { key: "darkBlue", label: "dark blue", roleId: process.env.DARK_BLUE_COLOR_ROLE_ID },
+      { key: "lilac", label: "lilac", roleId: process.env.LILAC_COLOR_ROLE_ID },
+      { key: "purple", label: "purple", roleId: process.env.PURPLE_COLOR_ROLE_ID },
+      { key: "pink", label: "pink", roleId: process.env.PINK_COLOR_ROLE_ID },
+      { key: "black", label: "black", roleId: process.env.BLACK_COLOR_ROLE_ID },
+      { key: "white", label: "white", roleId: process.env.WHITE_COLOR_ROLE_ID }
+    ],
+    future: [
+      // Add movie night or other future role groups here when you make those channels/roles.
+    ]
   }
 };
 

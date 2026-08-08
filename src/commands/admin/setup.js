@@ -1,7 +1,7 @@
 const { PermissionFlagsBits, SlashCommandBuilder } = require("discord.js");
-const { introPromptEmbed, rolesEmbed, verifyEmbed } = require("../../utils/embeds");
+const { introPromptEmbed, roleGroupEmbed, verifyEmbed } = require("../../utils/embeds");
 const { verifyButtonRow } = require("../../utils/onboarding");
-const { roleSelectRow } = require("../../utils/roles");
+const { rolePanels } = require("../../utils/roles");
 const { sendToChannel } = require("../../utils/logging");
 
 module.exports = {
@@ -12,23 +12,41 @@ module.exports = {
     .addSubcommand((subcommand) =>
       subcommand
         .setName("onboarding")
-        .setDescription("Post verify, roles, and intro messages to the configured channels.")
+        .setDescription("Post verify and intro messages to the configured channels.")
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("roles")
+        .setDescription("Post game and color role menus to the roles channel.")
     ),
   async execute(interaction, client) {
+    const subcommand = interaction.options.getSubcommand();
     await interaction.deferReply({ ephemeral: true });
+
+    if (subcommand === "roles") {
+      const panels = rolePanels(client.config);
+      const posted = [];
+
+      for (const panel of panels) {
+        const message = await sendToChannel(client, client.config.channels.roles, {
+          embeds: [roleGroupEmbed(client, panel.group)],
+          components: [panel.row]
+        });
+        if (message) posted.push(panel.group);
+      }
+
+      await interaction.editReply(
+        posted.length
+          ? `Posted role menus: ${posted.join(", ")}.`
+          : "No role menus were posted. Add role IDs to .env first."
+      );
+      return;
+    }
 
     const verifyMessage = await sendToChannel(client, client.config.channels.verify, {
       embeds: [verifyEmbed(client)],
       components: [verifyButtonRow(client)]
     });
-
-    const roleRow = roleSelectRow(client.config);
-    const rolesMessage = roleRow
-      ? await sendToChannel(client, client.config.channels.roles, {
-          embeds: [rolesEmbed(client)],
-          components: [roleRow]
-        })
-      : null;
 
     const introMessage = await sendToChannel(client, client.config.channels.intro, {
       embeds: [introPromptEmbed(client)]
@@ -36,7 +54,6 @@ module.exports = {
 
     const posted = [
       verifyMessage && "verify",
-      rolesMessage && "roles",
       introMessage && "intro"
     ].filter(Boolean);
 
