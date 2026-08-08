@@ -8,65 +8,89 @@ const colors = {
   muted: 0x2b2d31
 };
 
+// Edit these blank strings when you want to customize the visible embed wording.
+// Leaving a value blank means the bot skips that title/description/field.
+const embedText = {
+  welcome: {
+    title: "", // This becomes .setTitle("...") on the welcome embed.
+    description: "", // This becomes .setDescription("...") on the welcome embed.
+    firstFieldName: "", // This becomes the first .addFields({ name: "..." }).
+    firstFieldValue: "" // This becomes the first .addFields({ value: "..." }).
+  },
+  verify: {
+    title: "", // This becomes .setTitle("...") on the verify embed.
+    description: "", // Explain what clicking the verify button does.
+    buttonLabel: "" // Button text. Blank uses "Start verification".
+  },
+  roles: {
+    title: "", // This becomes .setTitle("...") on the roles embed.
+    description: "" // Explain which roles people can choose.
+  },
+  intro: {
+    title: "", // This becomes .setTitle("...") on the intro embed.
+    description: "" // Explain what should go in intros.
+  },
+  verified: {
+    title: "", // This becomes .setTitle("...") after someone finishes verification.
+    description: "" // Short success message after the intro form is submitted.
+  }
+};
+
+function applyText(embed, text) {
+  if (text?.title) embed.setTitle(text.title);
+  if (text?.description) embed.setDescription(text.description);
+  if (text?.firstFieldName && text?.firstFieldValue) {
+    embed.addFields({ name: text.firstFieldName, value: text.firstFieldValue });
+  }
+  return embed;
+}
+
 function baseEmbed(client, options = {}) {
+  const color = typeof options === "number" ? options : options.color ?? colors.brand;
+
   return new EmbedBuilder()
-    .setColor(options.color ?? colors.brand)
+    .setColor(color)
     .setTimestamp()
-    .setFooter({
-      text: client.config.communityName,
-      iconURL: client.user?.displayAvatarURL()
-    });
+    .setFooter({ text: client.config.communityName });
 }
 
 function welcomeEmbed(member, client) {
-  const { config } = client;
-  const rules = config.channels.rules ? `<#${config.channels.rules}>` : "the rules";
-  const roles = config.channels.roles ? `<#${config.channels.roles}>` : "role selection";
-  const intro = config.channels.intro ? `<#${config.channels.intro}>` : "introductions";
+  const embed = baseEmbed(client, { color: colors.brand })
+    .setThumbnail(member.user.displayAvatarURL({ size: 256 }));
 
-  return baseEmbed(client)
-    .setAuthor({
-      name: `${member.user.username} joined ${config.communityName}`,
-      iconURL: member.user.displayAvatarURL()
-    })
-    .setTitle(`Welcome to ${config.communityName}`)
-    .setDescription(config.communityTagline)
-    .setThumbnail(member.user.displayAvatarURL({ size: 256 }))
-    .addFields(
-      { name: "Start here", value: `Check ${rules}, grab roles in ${roles}, and say hi in ${intro}.` },
-      { name: "Member count", value: `${member.guild.memberCount}`, inline: true }
-    );
+  return applyText(embed, embedText.welcome);
 }
 
-function introductionEmbed(client) {
-  const channels = client.config.channels;
-  const lines = [
-    "Drop a quick intro so people know what to invite you to.",
-    "",
-    "**Try:**",
-    "Name or nickname",
-    "Favorite games",
-    "Music you make or listen to",
-    "Timezone and usual play hours"
-  ];
+function verifyEmbed(client) {
+  return applyText(baseEmbed(client, { color: colors.info }), embedText.verify);
+}
 
-  if (channels.lfg) lines.push("", `Looking for a squad? Head to <#${channels.lfg}>.`);
-  if (channels.music) lines.push(`Sharing tracks or playlists? Use <#${channels.music}>.`);
+function rolesEmbed(client) {
+  return applyText(baseEmbed(client, { color: colors.info }), embedText.roles);
+}
 
-  return baseEmbed(client)
-    .setTitle(`Introduce yourself to ${client.config.communityName}`)
-    .setDescription(lines.join("\n"))
-    .setColor(colors.info);
+function introPromptEmbed(client) {
+  return applyText(baseEmbed(client, { color: colors.info }), embedText.intro);
+}
+
+function verifiedEmbed(client) {
+  return applyText(baseEmbed(client, { color: colors.success }), embedText.verified);
 }
 
 function logEmbed(client, title, description, color = colors.muted) {
-  return baseEmbed(client, { color }).setTitle(title).setDescription(description);
+  return baseEmbed(client, { color })
+    .setTitle(title)
+    .setDescription(description);
 }
 
 module.exports = {
   baseEmbed,
   colors,
-  introductionEmbed,
+  embedText,
+  introPromptEmbed,
   logEmbed,
+  rolesEmbed,
+  verifiedEmbed,
+  verifyEmbed,
   welcomeEmbed
 };

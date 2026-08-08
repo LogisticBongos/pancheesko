@@ -1,19 +1,25 @@
 const { Events } = require("discord.js");
 const { colors, logEmbed } = require("../utils/embeds");
 const { logModeration } = require("../utils/logging");
-const { BUTTON_PREFIX, SELECT_PREFIX, syncSelectRoles, toggleRole } = require("../utils/roles");
+const { ROLE_SELECT_ID, updateSelectedRoles } = require("../utils/roles");
+const { INTRO_MODAL_ID, VERIFY_BUTTON_ID, finishVerification, startVerification } = require("../utils/onboarding");
 
 module.exports = {
   name: Events.InteractionCreate,
   async execute(interaction, client) {
     try {
-      if (interaction.isButton() && interaction.customId.startsWith(BUTTON_PREFIX)) {
-        await toggleRole(interaction, interaction.customId.slice(BUTTON_PREFIX.length));
+      if (interaction.isButton() && interaction.customId === VERIFY_BUTTON_ID) {
+        await startVerification(interaction);
         return;
       }
 
-      if (interaction.isStringSelectMenu() && interaction.customId.startsWith(SELECT_PREFIX)) {
-        await syncSelectRoles(interaction, Number(interaction.customId.slice(SELECT_PREFIX.length)));
+      if (interaction.isStringSelectMenu() && interaction.customId === ROLE_SELECT_ID) {
+        await updateSelectedRoles(interaction);
+        return;
+      }
+
+      if (interaction.isModalSubmit() && interaction.customId === INTRO_MODAL_ID) {
+        await finishVerification(interaction);
         return;
       }
 

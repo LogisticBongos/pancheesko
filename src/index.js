@@ -1,5 +1,5 @@
 const path = require("node:path");
-const { Client, Collection, GatewayIntentBits, Partials } = require("discord.js");
+const { Client, Collection, GatewayIntentBits } = require("discord.js");
 const { config, requireRuntimeConfig } = require("./config");
 const { loadCommands } = require("./utils/loaders");
 const { registerEvents } = require("./utils/events");
@@ -11,11 +11,8 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildModeration,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.GuildMessageReactions,
-    GatewayIntentBits.MessageContent
-  ],
-  partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.User]
+    GatewayIntentBits.GuildMessages
+  ]
 });
 
 client.commands = new Collection();
