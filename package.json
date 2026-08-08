@@ -1,0 +1,22 @@
+{
+  "name": "pancheesko",
+  "version": "1.0.0",
+  "description": "A modular Discord community bot for Pancheesko.",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "packageManager": "pnpm@11.16.0",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "deploy:commands": "node src/deploy-commands.js",
+    "check": "node src/scripts/check-all.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@discordjs/builders": "^1.10.1",
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.7"
+  }
+}
