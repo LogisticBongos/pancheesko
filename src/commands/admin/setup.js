@@ -23,13 +23,28 @@ module.exports = {
       subcommand
         .setName("colour-roles")
         .setDescription("Post the colour role menu to the roles channel.")
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("activity-roles")
+        .setDescription("Post the activity role menu to the roles channel.")
     ),
   async execute(interaction, client) {
     const subcommand = interaction.options.getSubcommand();
     await interaction.deferReply({ ephemeral: true });
 
-    if (subcommand === "game-roles" || subcommand === "colour-roles") {
-      const group = subcommand === "colour-roles" ? "colors" : "games";
+    if (subcommand === "game-roles" || subcommand === "colour-roles" || subcommand === "activity-roles") {
+      const groups = {
+        "activity-roles": "activities",
+        "colour-roles": "colors",
+        "game-roles": "games"
+      };
+      const labels = {
+        "activity-roles": "activity roles",
+        "colour-roles": "colour roles",
+        "game-roles": "game roles"
+      };
+      const group = groups[subcommand];
       const panel = rolePanel(client.config, group);
 
       const message = panel
@@ -39,7 +54,7 @@ module.exports = {
           })
         : null;
 
-      const label = subcommand === "colour-roles" ? "colour roles" : "game roles";
+      const label = labels[subcommand];
       await interaction.editReply(
         message
           ? `posted ${label}.`

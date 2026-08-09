@@ -13,6 +13,7 @@ module.exports = {
 
     const gameRoles = client.config.roleGroups.games.filter((role) => role.roleId).length;
     const colorRoles = client.config.roleGroups.colors.filter((role) => role.roleId).length;
+    const activityRoles = client.config.roleGroups.activities.filter((role) => role.roleId).length;
 
     const embed = baseEmbed(client, { color: colors.info })
       .setTitle("pancheesko config check")
@@ -22,6 +23,7 @@ module.exports = {
         { name: "unverified role", value: client.config.onboarding.unverifiedRoleId ? "set" : "optional / missing", inline: true },
         { name: "game roles", value: `${gameRoles}`, inline: true },
         { name: "colour roles", value: `${colorRoles}`, inline: true },
+        { name: "activity roles", value: `${activityRoles}`, inline: true },
         { name: "minus-15 auto-ban", value: client.config.autoBan.minus15RoleId ? `set${client.config.autoBan.dryRun ? " (dry run)" : ""}` : "missing role id", inline: true }
       );
 

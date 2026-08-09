@@ -113,8 +113,12 @@ const config = {
       { key: "black", label: "black", roleId: process.env.BLACK_COLOR_ROLE_ID },
       { key: "white", label: "white", roleId: process.env.WHITE_COLOR_ROLE_ID }
     ],
-    future: [
-      // Add movie night or other future role groups here when you make those channels/roles.
+    activities: [
+      { key: "deadChat", label: "dead chat", roleId: process.env.DEAD_CHAT_ROLE_ID },
+      { key: "movieNight", label: "movie night", roleId: process.env.MOVIE_NIGHT_ROLE_ID },
+      { key: "vcPing", label: "vc ping", roleId: process.env.VC_PING_ROLE_ID },
+      { key: "gameNight", label: "game night", roleId: process.env.GAME_NIGHT_ROLE_ID },
+      { key: "friendslop", label: "friendslop", roleId: process.env.FRIENDSLOP_ROLE_ID }
     ]
   }
 };

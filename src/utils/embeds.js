@@ -34,6 +34,10 @@ const embedText = {
     title: "colour roles", // This becomes .setTitle("...") above the colour role menu.
     description: "choose one colour role. picking a new one removes the old one."
   },
+  activityRoles: {
+    title: "activity roles", // This becomes .setTitle("...") above the activity role menu.
+    description: "choose the pings you want for server stuff. you can choose more than one."
+  },
   intro: {
     title: "introductions", // This becomes .setTitle("...") on the intro embed.
     description: "introductions are optional. if you want, say your name, games you play, music you like, and when you are usually online."
@@ -78,7 +82,12 @@ function rolesEmbed(client) {
 }
 
 function roleGroupEmbed(client, group) {
-  const text = group === "colors" ? embedText.colorRoles : embedText.gameRoles;
+  const textByGroup = {
+    activities: embedText.activityRoles,
+    colors: embedText.colorRoles,
+    games: embedText.gameRoles
+  };
+  const text = textByGroup[group] || embedText.roles;
   return applyText(baseEmbed(client, { color: colors.info }), text);
 }
 

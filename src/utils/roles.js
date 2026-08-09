@@ -56,6 +56,17 @@ function rolePanels(config) {
     });
   }
 
+  const activityRow = roleGroupRow("activities", config.roleGroups.activities, {
+    placeholder: "pick activity roles"
+  });
+  if (activityRow) {
+    panels.push({
+      group: "activities",
+      row: activityRow,
+      singleChoice: false
+    });
+  }
+
   return panels;
 }
 
