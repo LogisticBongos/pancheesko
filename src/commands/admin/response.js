@@ -41,8 +41,10 @@ module.exports = {
       subcommand
         .setName("list")
         .setDescription("list trigger responses.")
-    ),
+  ),
   async execute(interaction, client) {
+    await interaction.deferReply({ ephemeral: true });
+
     const subcommand = interaction.options.getSubcommand();
 
     if (subcommand === "add") {
@@ -50,10 +52,7 @@ module.exports = {
       const response = interaction.options.getString("response", true);
 
       setResponse(interaction.guild.id, trigger, response, interaction.user.id);
-      await interaction.reply({
-        content: `saved response for \`${normaliseTrigger(trigger)}\`.`,
-        ephemeral: true
-      });
+      await interaction.editReply(`saved response for \`${normaliseTrigger(trigger)}\`.`);
       return;
     }
 
@@ -61,10 +60,7 @@ module.exports = {
       const trigger = interaction.options.getString("trigger", true);
       const removed = removeResponse(interaction.guild.id, trigger);
 
-      await interaction.reply({
-        content: removed ? `removed \`${normaliseTrigger(trigger)}\`.` : `could not find \`${normaliseTrigger(trigger)}\`.`,
-        ephemeral: true
-      });
+      await interaction.editReply(removed ? `removed \`${normaliseTrigger(trigger)}\`.` : `could not find \`${normaliseTrigger(trigger)}\`.`);
       return;
     }
 
@@ -77,6 +73,6 @@ module.exports = {
       .setTitle("responses")
       .setDescription(lines.length ? lines.join("\n") : "no responses set yet.");
 
-    await interaction.reply({ embeds: [embed], ephemeral: true });
+    await interaction.editReply({ embeds: [embed] });
   }
 };
