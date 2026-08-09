@@ -5,7 +5,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("user")
     .setDescription("Show user information.")
-    .addUserOption((option) => option.setName("member").setDescription("Member to inspect")),
+    .addUserOption((option) => option.setName("member").setDescription("member to inspect")),
   async execute(interaction, client) {
     const member = interaction.options.getMember("member") || interaction.member;
     const roles = member.roles.cache
@@ -18,9 +18,9 @@ module.exports = {
       .setTitle(member.user.tag)
       .setThumbnail(member.user.displayAvatarURL({ size: 256 }))
       .addFields(
-        { name: "Joined", value: member.joinedTimestamp ? `<t:${Math.floor(member.joinedTimestamp / 1000)}:R>` : "Unknown", inline: true },
-        { name: "Created", value: `<t:${Math.floor(member.user.createdTimestamp / 1000)}:R>`, inline: true },
-        { name: "Roles", value: roles.length ? roles.join(", ") : "No roles" }
+        { name: "joined", value: member.joinedTimestamp ? `<t:${Math.floor(member.joinedTimestamp / 1000)}:R>` : "unknown", inline: true },
+        { name: "created", value: `<t:${Math.floor(member.user.createdTimestamp / 1000)}:R>`, inline: true },
+        { name: "roles", value: roles.length ? roles.join(", ") : "no roles" }
       );
 
     await interaction.reply({ embeds: [embed] });

@@ -17,8 +17,8 @@ module.exports = {
       .setTitle(title)
       .setDescription(details)
       .addFields(
-        { name: "When", value: when, inline: true },
-        { name: "Host", value: `${interaction.user}`, inline: true }
+        { name: "when", value: when, inline: true },
+        { name: "host", value: `${interaction.user}`, inline: true }
       );
 
     await interaction.reply({ embeds: [embed] });

@@ -5,9 +5,9 @@ module.exports = {
   name: Events.ClientReady,
   once: true,
   async execute(client) {
-    console.log(`Logged in as ${client.user.tag}`);
+    console.log(`logged in as ${client.user.tag}`);
     client.user.setPresence({
-      activities: [{ name: `${client.config.communityName} community`, type: ActivityType.Watching }],
+      activities: [{ name: "pancheesko", type: ActivityType.Watching }],
       status: "online"
     });
 

@@ -43,7 +43,7 @@ function rolePanels(config) {
   }
 
   const colorRow = roleGroupRow("colors", config.roleGroups.colors, {
-    placeholder: "Pick one color role",
+    placeholder: "pick one colour role",
     singleChoice: true
   });
   if (colorRow) {
@@ -57,12 +57,16 @@ function rolePanels(config) {
   return panels;
 }
 
+function rolePanel(config, groupName) {
+  return rolePanels(config).find((panel) => panel.group === groupName) || null;
+}
+
 async function updateRoleGroup(interaction) {
   const groupName = interaction.customId.slice(ROLE_GROUP_SELECT_PREFIX.length);
   const group = interaction.client.config.roleGroups[groupName];
 
   if (!group) {
-    await interaction.reply({ content: "That role menu is not configured anymore.", ephemeral: true });
+    await interaction.reply({ content: "that role menu is not configured anymore.", ephemeral: true });
     return;
   }
 
@@ -81,13 +85,14 @@ async function updateRoleGroup(interaction) {
   }
 
   await interaction.reply({
-    content: "Your roles have been updated.",
+    content: "your roles have been updated.",
     ephemeral: true
   });
 }
 
 module.exports = {
   ROLE_GROUP_SELECT_PREFIX,
+  rolePanel,
   rolePanels,
   updateRoleGroup
 };

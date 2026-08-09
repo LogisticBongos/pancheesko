@@ -10,7 +10,7 @@ A simple `discord.js` bot for running Pancheesko's welcome, verification, roles,
 - Lets people verify through a button and intro form.
 - Posts completed intros in `intro`.
 - Gives the member role after verification.
-- Posts game and color role menus in `roles`.
+- Posts game and colour role menus in `roles`.
 - Logs joins/leaves and moderation actions.
 - Keeps the guarded `-15` auto-ban system.
 - Includes moderation and community commands.
@@ -74,10 +74,18 @@ That posts the verify button in `verify` and the intro prompt in `intro`.
 7. Then run:
 
    ```text
-   /setup roles
+   /setup game-roles
    ```
 
-That posts the game role menu and color role menu in `roles`.
+That posts the game role menu in `roles`.
+
+Then run:
+
+```text
+/setup colour-roles
+```
+
+That posts the colour role menu in `roles`.
 
 ## Editing Embed Messages
 
@@ -147,7 +155,7 @@ Color roles are single-choice:
 
 Leave any of them blank to hide that option.
 
-To add another game later, add a new env value in `.env.example`, add it to `roleGroups.games` in `src/config.js`, then rerun `/setup roles`.
+To add another game later, add a new env value in `.env.example`, add it to `roleGroups.games` in `src/config.js`, then rerun `/setup game-roles`.
 
 Future role groups like movie night can be added as another group in the same `roleGroups` area when you make those channels/roles.
 
@@ -173,9 +181,9 @@ The bot checks the exact role ID and role name, skips bots/elevated members, and
 
 ## Commands
 
-- Setup: `/setup onboarding`, `/setup roles`, `/config-check`, `/scan-minus15`
-- General: `/ping`, `/server`, `/user`, `/avatar`, `/links`
-- Community: `/lfg`, `/recommend`, `/poll`, `/event`
+- Setup: `/setup onboarding`, `/setup game-roles`, `/setup colour-roles`, `/config-check`, `/scan-minus15`
+- General: `/commands`, `/server`, `/user`, `/avatar`, `/links`
+- Community: `/poll`, `/event`
 - Moderation: `/ban`, `/kick`, `/timeout`, `/untimeout`, `/warn`, `/purge`, `/slowmode`, `/unban`
 
 ## Check The Code

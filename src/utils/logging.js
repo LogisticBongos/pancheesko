@@ -20,7 +20,8 @@ async function logMemberEvent(client, guild, title, description, color = colors.
 }
 
 async function logModeration(client, guild, title, description, color = colors.info) {
-  return sendToChannel(client, client.config.channels.modLog, {
+  const channelId = client.config.channels.modLog || client.config.channels.memberLog;
+  return sendToChannel(client, channelId, {
     embeds: [logEmbed(client, title, description, color)]
   });
 }

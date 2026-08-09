@@ -1,7 +1,7 @@
 const { PermissionFlagsBits, SlashCommandBuilder } = require("discord.js");
 const { introPromptEmbed, roleGroupEmbed, verifyEmbed } = require("../../utils/embeds");
 const { verifyButtonRow } = require("../../utils/onboarding");
-const { rolePanels } = require("../../utils/roles");
+const { rolePanel } = require("../../utils/roles");
 const { sendToChannel } = require("../../utils/logging");
 
 module.exports = {
@@ -16,29 +16,34 @@ module.exports = {
     )
     .addSubcommand((subcommand) =>
       subcommand
-        .setName("roles")
-        .setDescription("Post game and color role menus to the roles channel.")
+        .setName("game-roles")
+        .setDescription("Post the game role menu to the roles channel.")
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("colour-roles")
+        .setDescription("Post the colour role menu to the roles channel.")
     ),
   async execute(interaction, client) {
     const subcommand = interaction.options.getSubcommand();
     await interaction.deferReply({ ephemeral: true });
 
-    if (subcommand === "roles") {
-      const panels = rolePanels(client.config);
-      const posted = [];
+    if (subcommand === "game-roles" || subcommand === "colour-roles") {
+      const group = subcommand === "colour-roles" ? "colors" : "games";
+      const panel = rolePanel(client.config, group);
 
-      for (const panel of panels) {
-        const message = await sendToChannel(client, client.config.channels.roles, {
-          embeds: [roleGroupEmbed(client, panel.group)],
-          components: [panel.row]
-        });
-        if (message) posted.push(panel.group);
-      }
+      const message = panel
+        ? await sendToChannel(client, client.config.channels.roles, {
+            embeds: [roleGroupEmbed(client, panel.group)],
+            components: [panel.row]
+          })
+        : null;
 
+      const label = subcommand === "colour-roles" ? "colour roles" : "game roles";
       await interaction.editReply(
-        posted.length
-          ? `Posted role menus: ${posted.join(", ")}.`
-          : "No role menus were posted. Add role IDs to .env first."
+        message
+          ? `posted ${label}.`
+          : `no ${label} menu was posted. add role ids to .env first.`
       );
       return;
     }
@@ -60,7 +65,7 @@ module.exports = {
     await interaction.editReply(
       posted.length
         ? `Posted onboarding messages: ${posted.join(", ")}.`
-        : "No onboarding messages were posted. Check your channel IDs and role IDs."
+        : "no onboarding messages were posted. check your channel ids and role ids."
     );
   }
 };

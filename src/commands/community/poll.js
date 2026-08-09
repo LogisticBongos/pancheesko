@@ -7,7 +7,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("poll")
     .setDescription("Create a simple reaction poll.")
-    .addStringOption((option) => option.setName("question").setDescription("Poll question").setRequired(true))
+    .addStringOption((option) => option.setName("question").setDescription("poll question").setRequired(true))
     .addStringOption((option) => option.setName("option1").setDescription("First option").setRequired(true))
     .addStringOption((option) => option.setName("option2").setDescription("Second option").setRequired(true))
     .addStringOption((option) => option.setName("option3").setDescription("Third option"))
@@ -22,7 +22,7 @@ module.exports = {
     const embed = baseEmbed(client, { color: colors.info })
       .setTitle(question)
       .setDescription(options.map((option, index) => `${numberEmoji[index]} ${option}`).join("\n"))
-      .setAuthor({ name: `Poll by ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() });
+      .setAuthor({ name: `poll by ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() });
 
     const message = await interaction.reply({ embeds: [embed], fetchReply: true });
     for (const emoji of numberEmoji.slice(0, options.length)) {
