@@ -107,7 +107,7 @@ async function finishVerification(interaction) {
   ].join(" and ");
 
   await interaction.reply({
-    content: `You're verified. Next, ${nextSteps}.`,
+    content: `you're verified. next, ${nextSteps}.`,
     ephemeral: true
   });
 }

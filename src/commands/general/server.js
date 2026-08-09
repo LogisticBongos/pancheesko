@@ -13,9 +13,9 @@ module.exports = {
       .setTitle(guild.name)
       .setThumbnail(guild.iconURL({ size: 256 }))
       .addFields(
-        { name: "Members", value: `${guild.memberCount}`, inline: true },
-        { name: "Created", value: `<t:${Math.floor(guild.createdTimestamp / 1000)}:R>`, inline: true },
-        { name: "Owner", value: `<@${guild.ownerId}>`, inline: true }
+        { name: "members", value: `${guild.memberCount}`, inline: true },
+        { name: "created", value: `<t:${Math.floor(guild.createdTimestamp / 1000)}:R>`, inline: true },
+        { name: "owner", value: `<@${guild.ownerId}>`, inline: true }
       );
 
     await interaction.reply({ embeds: [embed] });

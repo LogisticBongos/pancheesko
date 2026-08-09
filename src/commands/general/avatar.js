@@ -5,7 +5,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("avatar")
     .setDescription("Show a user's avatar.")
-    .addUserOption((option) => option.setName("user").setDescription("User to show")),
+    .addUserOption((option) => option.setName("user").setDescription("user to show")),
   async execute(interaction, client) {
     const user = interaction.options.getUser("user") || interaction.user;
     const url = user.displayAvatarURL({ size: 1024 });

@@ -38,7 +38,7 @@ module.exports = {
       await interaction.editReply(
         posted.length
           ? `Posted role menus: ${posted.join(", ")}.`
-          : "No role menus were posted. Add role IDs to .env first."
+          : "no role menus were posted. add role ids to .env first."
       );
       return;
     }
@@ -60,7 +60,7 @@ module.exports = {
     await interaction.editReply(
       posted.length
         ? `Posted onboarding messages: ${posted.join(", ")}.`
-        : "No onboarding messages were posted. Check your channel IDs and role IDs."
+        : "no onboarding messages were posted. check your channel ids and role ids."
     );
   }
 };

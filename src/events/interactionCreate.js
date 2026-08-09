@@ -26,13 +26,13 @@ module.exports = {
       if (!interaction.isChatInputCommand()) return;
 
       if (!interaction.guild) {
-        await interaction.reply({ content: "Pancheesko commands only work inside the server.", ephemeral: true });
+        await interaction.reply({ content: "pancheesko commands only work inside the server.", ephemeral: true });
         return;
       }
 
       const command = client.commands.get(interaction.commandName);
       if (!command) {
-        await interaction.reply({ content: "That command is not available right now.", ephemeral: true });
+        await interaction.reply({ content: "that command is not available right now.", ephemeral: true });
         return;
       }
 

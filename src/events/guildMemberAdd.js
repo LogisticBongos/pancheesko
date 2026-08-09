@@ -7,7 +7,7 @@ module.exports = {
   name: Events.GuildMemberAdd,
   async execute(member, client) {
     await sendToChannel(client, client.config.channels.mail, {
-      content: `Welcome ${member}!`,
+      content: `welcome ${member}!`,
       embeds: [welcomeEmbed(member, client)]
     });
 
@@ -19,7 +19,7 @@ module.exports = {
     await logMemberEvent(
       client,
       member.guild,
-      "Member joined",
+      "member joined",
       `${member.user.tag} (${member.id}) joined the server.`,
       colors.success
     );

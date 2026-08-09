@@ -18,26 +18,26 @@ function canBotModerate(target) {
 
 async function safeBanMinus15(member, client, trigger = "role check") {
   const { autoBan } = client.config;
-  if (!autoBan.minus15RoleId) return { action: "skipped", reason: "AUTO_BAN_MINUS15_ROLE_ID is not configured." };
-  if (!member.roles.cache.has(autoBan.minus15RoleId)) return { action: "skipped", reason: "Member does not have configured role." };
+  if (!autoBan.minus15RoleId) return { action: "skipped", reason: "auto ban minus-15 role id is not configured." };
+  if (!member.roles.cache.has(autoBan.minus15RoleId)) return { action: "skipped", reason: "member does not have configured role." };
 
   const role = member.guild.roles.cache.get(autoBan.minus15RoleId);
-  if (!role) return { action: "skipped", reason: "Configured role was not found in this guild." };
+  if (!role) return { action: "skipped", reason: "configured role was not found in this guild." };
   if (role.name !== autoBan.minus15RoleName) {
-    return { action: "skipped", reason: `Configured role name is "${role.name}", expected "${autoBan.minus15RoleName}".` };
+    return { action: "skipped", reason: `configured role name is "${role.name}", expected "${autoBan.minus15RoleName}".` };
   }
-  if (member.user.bot) return { action: "skipped", reason: "Bots are not auto-banned." };
+  if (member.user.bot) return { action: "skipped", reason: "bots are not auto-banned." };
   if (member.permissions.has(PermissionFlagsBits.Administrator) || member.permissions.has(PermissionFlagsBits.ManageGuild)) {
-    return { action: "skipped", reason: "Member has elevated server permissions." };
+    return { action: "skipped", reason: "member has elevated server permissions." };
   }
-  if (!canBotModerate(member)) return { action: "skipped", reason: "Bot role is not high enough to ban this member." };
+  if (!canBotModerate(member)) return { action: "skipped", reason: "bot role is not high enough to ban this member." };
 
-  const reason = `${autoBan.reason} Trigger: ${trigger}`;
+  const reason = `${autoBan.reason} trigger: ${trigger}`;
   if (autoBan.dryRun) {
     await logModeration(
       client,
       member.guild,
-      "Auto-ban dry run",
+      "auto-ban dry run",
       `${member.user.tag} (${member.id}) has ${role.name}, but AUTO_BAN_DRY_RUN is enabled.`,
       colors.danger
     );
@@ -48,8 +48,8 @@ async function safeBanMinus15(member, client, trigger = "role check") {
   await logModeration(
     client,
     member.guild,
-    "Auto-banned member",
-    `${member.user.tag} (${member.id}) was banned because they had ${role.name}.\nReason: ${reason}`,
+    "auto-banned member",
+    `${member.user.tag} (${member.id}) was banned because they had ${role.name}.\nreason: ${reason}`,
     colors.danger
   );
   return { action: "banned", reason };

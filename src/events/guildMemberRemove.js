@@ -8,7 +8,7 @@ module.exports = {
     await logMemberEvent(
       client,
       member.guild,
-      "Member left",
+      "member left",
       `${member.user.tag} (${member.id}) left the server.`,
       colors.danger
     );

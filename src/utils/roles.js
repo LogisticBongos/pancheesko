@@ -62,7 +62,7 @@ async function updateRoleGroup(interaction) {
   const group = interaction.client.config.roleGroups[groupName];
 
   if (!group) {
-    await interaction.reply({ content: "That role menu is not configured anymore.", ephemeral: true });
+    await interaction.reply({ content: "that role menu is not configured anymore.", ephemeral: true });
     return;
   }
 
@@ -81,7 +81,7 @@ async function updateRoleGroup(interaction) {
   }
 
   await interaction.reply({
-    content: "Your roles have been updated.",
+    content: "your roles have been updated.",
     ephemeral: true
   });
 }

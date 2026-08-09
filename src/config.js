@@ -10,7 +10,7 @@ const config = {
   token: process.env.DISCORD_TOKEN,
   clientId: process.env.CLIENT_ID,
   guildId: process.env.GUILD_ID,
-  communityName: process.env.COMMUNITY_NAME || "Pancheesko",
+  communityName: process.env.COMMUNITY_NAME || "pancheesko",
   communityTagline: process.env.COMMUNITY_TAGLINE || "",
   channels: {
     mail: process.env.MAIL_CHANNEL_ID,
@@ -61,7 +61,7 @@ const config = {
   autoBan: {
     minus15RoleId: process.env.AUTO_BAN_MINUS15_ROLE_ID,
     minus15RoleName: process.env.AUTO_BAN_MINUS15_ROLE_NAME || "-15",
-    reason: process.env.AUTO_BAN_REASON || "Automatic ban: member has the configured -15 role.",
+    reason: process.env.AUTO_BAN_REASON || "automatic ban: member has the configured -15 role.",
     scanOnReady: getBoolean("AUTO_BAN_SCAN_ON_READY", false),
     dryRun: getBoolean("AUTO_BAN_DRY_RUN", false)
   },
@@ -79,7 +79,7 @@ const config = {
       { key: "fortnite", label: "fortnite", roleId: process.env.FORTNITE_ROLE_ID },
       { key: "marvelRivals", label: "marvel rivals", roleId: process.env.MARVEL_RIVALS_ROLE_ID },
       { key: "genshin", label: "genshin", roleId: process.env.GENSHIN_ROLE_ID },
-      { key: "dbd", label: "DBD", roleId: process.env.DBD_ROLE_ID }
+      { key: "dbd", label: "dbd", roleId: process.env.DBD_ROLE_ID }
     ],
     colors: [
       { key: "red", label: "red", roleId: process.env.RED_COLOR_ROLE_ID },
@@ -108,7 +108,7 @@ function requireRuntimeConfig() {
   if (!config.clientId) missing.push("CLIENT_ID");
 
   if (missing.length) {
-    throw new Error(`Missing required environment variable(s): ${missing.join(", ")}`);
+    throw new Error(`missing required environment variable(s): ${missing.join(", ")}`);
   }
 }
 

@@ -2,12 +2,12 @@ const { SlashCommandBuilder } = require("discord.js");
 const { baseEmbed, colors } = require("../../utils/embeds");
 
 const labels = {
-  website: "Website",
-  twitch: "Twitch",
-  youtube: "YouTube",
-  spotify: "Spotify",
-  soundcloud: "SoundCloud",
-  steam: "Steam group"
+  website: "website",
+  twitch: "twitch",
+  youtube: "youtube",
+  spotify: "spotify",
+  soundcloud: "soundcloud",
+  steam: "steam group"
 };
 
 module.exports = {
@@ -21,7 +21,7 @@ module.exports = {
 
     const embed = baseEmbed(client, { color: colors.brand })
       .setTitle(`${client.config.communityName} links`)
-      .setDescription(lines.length ? lines.join("\n") : "No community links are configured yet.");
+      .setDescription(lines.length ? lines.join("\n") : "no community links are configured yet.");
 
     await interaction.reply({ embeds: [embed], ephemeral: lines.length === 0 });
   }

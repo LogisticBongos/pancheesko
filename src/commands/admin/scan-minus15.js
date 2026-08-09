@@ -17,7 +17,7 @@ module.exports = {
     const shouldExecute = interaction.options.getBoolean("execute") === true;
 
     if (!roleId) {
-      await interaction.reply({ content: "AUTO_BAN_MINUS15_ROLE_ID is not configured.", ephemeral: true });
+      await interaction.reply({ content: "auto ban minus-15 role id is not configured.", ephemeral: true });
       return;
     }
 
@@ -27,9 +27,9 @@ module.exports = {
 
     if (!shouldExecute) {
       const embed = baseEmbed(client, { color: colors.info })
-        .setTitle("Minus-15 scan preview")
-        .setDescription(flaggedMembers.length ? flaggedMembers.map((member) => `${member.user.tag} (${member.id})`).slice(0, 20).join("\n") : "No matching members found.")
-        .addFields({ name: "Matches", value: `${flaggedMembers.length}`, inline: true });
+        .setTitle("minus-15 scan preview")
+        .setDescription(flaggedMembers.length ? flaggedMembers.map((member) => `${member.user.tag} (${member.id})`).slice(0, 20).join("\n") : "no matching members found.")
+        .addFields({ name: "matches", value: `${flaggedMembers.length}`, inline: true });
       await interaction.editReply({ embeds: [embed] });
       return;
     }
@@ -41,9 +41,9 @@ module.exports = {
     }
 
     const embed = baseEmbed(client, { color: colors.danger })
-      .setTitle("Minus-15 scan complete")
-      .setDescription(results.slice(0, 20).join("\n") || "No matching members found.")
-      .addFields({ name: "Checked", value: `${flaggedMembers.length}`, inline: true });
+      .setTitle("minus-15 scan complete")
+      .setDescription(results.slice(0, 20).join("\n") || "no matching members found.")
+      .addFields({ name: "checked", value: `${flaggedMembers.length}`, inline: true });
 
     await interaction.editReply({ embeds: [embed] });
   }

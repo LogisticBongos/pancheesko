@@ -16,14 +16,14 @@ module.exports = {
     const notes = interaction.options.getString("notes");
 
     const embed = baseEmbed(client, { color: colors.success })
-      .setTitle(`LFG: ${game}`)
+      .setTitle(`lfg: ${game}`)
       .setDescription(notes || "React or reply if you want in.")
       .addFields(
-        { name: "When", value: when, inline: true },
-        { name: "Host", value: `${interaction.user}`, inline: true }
+        { name: "when", value: when, inline: true },
+        { name: "host", value: `${interaction.user}`, inline: true }
       );
 
-    if (spots) embed.addFields({ name: "Open spots", value: `${spots}`, inline: true });
+    if (spots) embed.addFields({ name: "open spots", value: `${spots}`, inline: true });
     await interaction.reply({ embeds: [embed] });
   }
 };
