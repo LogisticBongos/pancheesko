@@ -38,17 +38,34 @@ const config = {
     birthday: process.env.BIRTHDAY_CHANNEL_ID,
     overwatch: process.env.OVERWATCH_CHANNEL_ID,
     deadlock: process.env.DEADLOCK_CHANNEL_ID,
+    marvelRivals: process.env.MARVEL_RIVALS_CHANNEL_ID,
+    league: process.env.LEAGUE_CHANNEL_ID,
+    minecraft: process.env.MINECRAFT_CHANNEL_ID,
+    roblox: process.env.ROBLOX_CHANNEL_ID,
+    genshin: process.env.GENSHIN_CHANNEL_ID,
+    fortnite: process.env.FORTNITE_CHANNEL_ID,
     dbd: process.env.DBD_CHANNEL_ID,
     bnetId: process.env.BNET_ID_CHANNEL_ID,
     steamId: process.env.STEAM_ID_CHANNEL_ID,
-    robloxUser: process.env.ROBLOX_USER_CHANNEL_ID
+    robloxUser: process.env.ROBLOX_USER_CHANNEL_ID,
+    voicechat: process.env.VOICECHAT_CHANNEL_ID,
+    coolKidsVoice: process.env.COOL_KIDS_VOICE_CHANNEL_ID,
+    overwatchVoice: process.env.OVERWATCH_VOICE_CHANNEL_ID,
+    deadlockVoice: process.env.DEADLOCK_VOICE_CHANNEL_ID,
+    fortniteVoice: process.env.FORTNITE_VOICE_CHANNEL_ID,
+    minecraftVoice: process.env.MINECRAFT_VOICE_CHANNEL_ID,
+    marvelRivalsVoice: process.env.MARVEL_RIVALS_VOICE_CHANNEL_ID,
+    dbdVoice: process.env.DBD_VOICE_CHANNEL_ID,
+    musicVoice: process.env.MUSIC_VOICE_CHANNEL_ID,
+    karaokeVoice: process.env.KARAOKE_VOICE_CHANNEL_ID,
+    superSecretTickleTimeVoice: process.env.SUPER_SECRET_TICKLE_TIME_VOICE_CHANNEL_ID
   },
   channelMap: {
     main: ["rules", "mail", "roles", "verify", "intro", "secret", "tiktok", "log"],
     "001": ["general", "media", "gaming", "pets-woof-meow", "art", "clips", "vent", "roleplay"],
     "002": ["bots", "music", "mudae", "bump", "userphone", "birthday"],
-    "003": ["overwatch", "deadlock", "dbd", "bnet-id", "steam-id", "roblox-user"],
-    "004": ["voicechat", "cool kids", "overwatch", "deadlock", "dbd", "music", "karaoke", "super secret tickle time"]
+    "003": ["overwatch", "deadlock", "marvel-rivals", "lol", "minecraft", "roblox", "genshin", "fortnite", "dbd", "bnet-id", "steam-id", "roblox-user"],
+    "004": ["voicechat", "cool kids", "overwatch", "deadlock", "fortnite", "minecraft", "marvel rivals", "dbd", "music", "karaoke", "super secret tickle time"]
   },
   links: {
     website: process.env.WEBSITE_URL,
