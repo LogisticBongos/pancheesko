@@ -43,7 +43,7 @@ function rolePanels(config) {
   }
 
   const colorRow = roleGroupRow("colors", config.roleGroups.colors, {
-    placeholder: "Pick one color role",
+    placeholder: "pick one colour role",
     singleChoice: true
   });
   if (colorRow) {
@@ -55,6 +55,10 @@ function rolePanels(config) {
   }
 
   return panels;
+}
+
+function rolePanel(config, groupName) {
+  return rolePanels(config).find((panel) => panel.group === groupName) || null;
 }
 
 async function updateRoleGroup(interaction) {
@@ -88,6 +92,7 @@ async function updateRoleGroup(interaction) {
 
 module.exports = {
   ROLE_GROUP_SELECT_PREFIX,
+  rolePanel,
   rolePanels,
   updateRoleGroup
 };

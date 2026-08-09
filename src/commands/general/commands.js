@@ -3,9 +3,8 @@ const { baseEmbed, colors } = require("../../utils/embeds");
 
 const commandGroups = [
   {
-    name: "getting around",
+    name: "general",
     value: [
-      "`/ping` - checks if i am awake.",
       "`/server` - shows a quick server summary.",
       "`/user` - shows join date, account age, and roles.",
       "`/avatar` - grabs someone's avatar.",
@@ -14,10 +13,8 @@ const commandGroups = [
     ].join("\n")
   },
   {
-    name: "community stuff",
+    name: "community",
     value: [
-      "`/lfg` - make a looking-for-group post.",
-      "`/recommend` - share a game, song, album, artist, or playlist.",
       "`/poll` - make a quick reaction poll.",
       "`/event` - post a simple event card."
     ].join("\n")
@@ -26,7 +23,8 @@ const commandGroups = [
     name: "setup",
     value: [
       "`/setup onboarding` - posts the verify and intro messages.",
-      "`/setup roles` - posts the game and color role menus.",
+      "`/setup game-roles` - posts the game role menu.",
+      "`/setup colour-roles` - posts the colour role menu.",
       "`/config-check` - checks what ids are set in `.env`.",
       "`/scan-minus15` - previews or runs the minus-15 role ban scan."
     ].join("\n")
@@ -49,11 +47,10 @@ const commandGroups = [
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("commands")
-    .setDescription("show what i can do, without making it weird."),
+    .setDescription("show the command list."),
   async execute(interaction, client) {
     const embed = baseEmbed(client, { color: colors.info })
-      .setTitle("commands")
-      .setDescription("here is the short version.")
+      .setTitle("command list")
       .addFields(commandGroups);
 
     await interaction.reply({ embeds: [embed], ephemeral: true });

@@ -21,7 +21,7 @@ module.exports = {
         { name: "member role", value: client.config.onboarding.memberRoleId ? "set" : "missing", inline: true },
         { name: "unverified role", value: client.config.onboarding.unverifiedRoleId ? "set" : "optional / missing", inline: true },
         { name: "game roles", value: `${gameRoles}`, inline: true },
-        { name: "color roles", value: `${colorRoles}`, inline: true },
+        { name: "colour roles", value: `${colorRoles}`, inline: true },
         { name: "minus-15 auto-ban", value: client.config.autoBan.minus15RoleId ? `set${client.config.autoBan.dryRun ? " (dry run)" : ""}` : "missing role id", inline: true }
       );
 

@@ -18,29 +18,29 @@ const embedText = {
     firstFieldValue: "" // This becomes the first .addFields({ value: "..." }).
   },
   verify: {
-    title: "", // This becomes .setTitle("...") on the verify embed.
-    description: "", // Explain what clicking the verify button does.
-    buttonLabel: "" // Button text. Blank uses "Start verification".
+    title: "verify", // This becomes .setTitle("...") on the verify embed.
+    description: "read the rules, then press the button below to get access to the server. after that, head to roles and pick what you want.", // Explain what clicking the verify button does.
+    buttonLabel: "i agree" // Button text.
   },
   roles: {
-    title: "", // This becomes .setTitle("...") on the roles embed.
-    description: "" // Explain which roles people can choose.
+    title: "roles", // This becomes .setTitle("...") on the roles embed.
+    description: "pick the roles you want from the menus below. you can come back and change them whenever."
   },
   gameRoles: {
-    title: "", // This becomes .setTitle("...") above the game role menu.
-    description: "" // Explain that people can choose more than one game role.
+    title: "game roles", // This becomes .setTitle("...") above the game role menu.
+    description: "choose the games you play or want pings/channels for. you can choose more than one."
   },
   colorRoles: {
-    title: "", // This becomes .setTitle("...") above the color role menu.
-    description: "" // Explain that people can only choose one color role.
+    title: "colour roles", // This becomes .setTitle("...") above the colour role menu.
+    description: "choose one colour role. picking a new one removes the old one."
   },
   intro: {
-    title: "", // This becomes .setTitle("...") on the intro embed.
-    description: "" // Explain what should go in intros.
+    title: "introductions", // This becomes .setTitle("...") on the intro embed.
+    description: "introductions are optional. if you want, say your name, games you play, music you like, and when you are usually online."
   },
   verified: {
-    title: "", // This becomes .setTitle("...") after someone finishes verification.
-    description: "" // Short success message after the intro form is submitted.
+    title: "verified", // This becomes .setTitle("...") after someone verifies.
+    description: "you are in. go pick your roles next."
   }
 };
 

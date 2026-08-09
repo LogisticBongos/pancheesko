@@ -1,19 +1,14 @@
 const {
   ActionRowBuilder,
   ButtonBuilder,
-  ButtonStyle,
-  ModalBuilder,
-  TextInputBuilder,
-  TextInputStyle
+  ButtonStyle
 } = require("discord.js");
-const { embedText, verifiedEmbed } = require("./embeds");
-const { sendToChannel } = require("./logging");
+const { embedText } = require("./embeds");
 
 const VERIFY_BUTTON_ID = "onboarding_verify";
-const INTRO_MODAL_ID = "onboarding_intro_modal";
 
-function verifyButtonRow(client) {
-  const label = embedText.verify.buttonLabel || "Start verification";
+function verifyButtonRow() {
+  const label = embedText.verify.buttonLabel || "i agree";
 
   return new ActionRowBuilder().addComponents(
     new ButtonBuilder()
@@ -23,99 +18,30 @@ function verifyButtonRow(client) {
   );
 }
 
-function introModal() {
-  const modal = new ModalBuilder()
-    .setCustomId(INTRO_MODAL_ID)
-    .setTitle("Server intro");
-
-  const name = new TextInputBuilder()
-    .setCustomId("name")
-    .setLabel("Name or nickname")
-    .setStyle(TextInputStyle.Short)
-    .setRequired(true);
-
-  const games = new TextInputBuilder()
-    .setCustomId("games")
-    .setLabel("Games you play")
-    .setStyle(TextInputStyle.Short)
-    .setRequired(false);
-
-  const music = new TextInputBuilder()
-    .setCustomId("music")
-    .setLabel("Music you like or make")
-    .setStyle(TextInputStyle.Short)
-    .setRequired(false);
-
-  const timezone = new TextInputBuilder()
-    .setCustomId("timezone")
-    .setLabel("Timezone / usual active time")
-    .setStyle(TextInputStyle.Short)
-    .setRequired(false);
-
-  modal.addComponents(
-    new ActionRowBuilder().addComponents(name),
-    new ActionRowBuilder().addComponents(games),
-    new ActionRowBuilder().addComponents(music),
-    new ActionRowBuilder().addComponents(timezone)
-  );
-
-  return modal;
-}
-
-async function startVerification(interaction) {
-  await interaction.showModal(introModal());
-}
-
-async function finishVerification(interaction) {
+async function verifyMember(interaction) {
   const member = interaction.member;
   const { onboarding, channels } = interaction.client.config;
 
   if (onboarding.memberRoleId) {
     const memberRole = interaction.guild.roles.cache.get(onboarding.memberRoleId);
-    if (memberRole) await member.roles.add(memberRole, "Completed bot onboarding");
+    if (memberRole) await member.roles.add(memberRole, "agreed to rules");
   }
 
   if (onboarding.unverifiedRoleId) {
     const unverifiedRole = interaction.guild.roles.cache.get(onboarding.unverifiedRoleId);
-    if (unverifiedRole) await member.roles.remove(unverifiedRole, "Completed bot onboarding");
+    if (unverifiedRole) await member.roles.remove(unverifiedRole, "agreed to rules");
   }
 
-  const name = interaction.fields.getTextInputValue("name");
-  const games = interaction.fields.getTextInputValue("games") || "Not answered";
-  const music = interaction.fields.getTextInputValue("music") || "Not answered";
-  const timezone = interaction.fields.getTextInputValue("timezone") || "Not answered";
-
-  await sendToChannel(interaction.client, channels.intro, {
-    content: `${interaction.user}`,
-    embeds: [
-      verifiedEmbed(interaction.client)
-        .setAuthor({
-          name: `${name}`,
-          iconURL: interaction.user.displayAvatarURL()
-        })
-        .addFields(
-          { name: "Games", value: games },
-          { name: "Music", value: music },
-          { name: "Timezone / active time", value: timezone }
-        )
-    ]
-  });
-
-  const nextSteps = [
-    channels.roles ? `pick roles in <#${channels.roles}>` : "pick your roles",
-    channels.general ? `say hi in <#${channels.general}>` : "say hi in general"
-  ].join(" and ");
+  const rolesStep = channels.roles ? `next, go to <#${channels.roles}> and pick your roles.` : "next, go pick your roles.";
 
   await interaction.reply({
-    content: `you're verified. next, ${nextSteps}.`,
+    content: `you're verified. ${rolesStep}`,
     ephemeral: true
   });
 }
 
 module.exports = {
-  INTRO_MODAL_ID,
   VERIFY_BUTTON_ID,
-  finishVerification,
-  startVerification,
-  verifyButtonRow
+  verifyButtonRow,
+  verifyMember
 };

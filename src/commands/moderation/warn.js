@@ -1,6 +1,7 @@
 const { PermissionFlagsBits, SlashCommandBuilder } = require("discord.js");
 const { colors } = require("../../utils/embeds");
-const { logModeration } = require("../../utils/logging");
+const { logModeration, sendToChannel } = require("../../utils/logging");
+const { addWarning, moderationSummaryEmbed } = require("../../utils/moderationRecords");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -14,7 +15,12 @@ module.exports = {
     const reason = interaction.options.getString("reason", true);
     if (!member) return interaction.reply({ content: "that member is not in this server.", ephemeral: true });
 
+    const record = addWarning(interaction.guild.id, member.id, interaction.user.id, reason);
+
     await logModeration(client, interaction.guild, "member warned", `${member.user.tag} (${member.id})\nmoderator: ${interaction.user.tag}\nreason: ${reason}`, colors.danger);
+    await sendToChannel(client, client.config.channels.memberLog, {
+      embeds: [moderationSummaryEmbed(member, record)]
+    });
     await interaction.reply({ content: `${member.user.tag} was warned and the warning was logged.`, ephemeral: true });
   }
 };

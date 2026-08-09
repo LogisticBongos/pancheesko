@@ -6,8 +6,10 @@ const { safeBanMinus15 } = require("../utils/moderation");
 module.exports = {
   name: Events.GuildMemberAdd,
   async execute(member, client) {
+    const verifyStep = client.config.channels.verify ? `read the rules, then verify in <#${client.config.channels.verify}>.` : "read the rules, then head to verify.";
+
     await sendToChannel(client, client.config.channels.mail, {
-      content: `welcome ${member}!`,
+      content: `welcome ${member}. ${verifyStep}`,
       embeds: [welcomeEmbed(member, client)]
     });
 

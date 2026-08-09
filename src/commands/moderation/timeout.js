@@ -1,7 +1,8 @@
 const { PermissionFlagsBits, SlashCommandBuilder } = require("discord.js");
 const { colors } = require("../../utils/embeds");
-const { logModeration } = require("../../utils/logging");
+const { logModeration, sendToChannel } = require("../../utils/logging");
 const { canBotModerate, canModerateMember, formatDuration } = require("../../utils/moderation");
+const { addMute, moderationSummaryEmbed } = require("../../utils/moderationRecords");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -21,7 +22,11 @@ module.exports = {
     if (!canBotModerate(member)) return interaction.reply({ content: "my role is not high enough to timeout that member.", ephemeral: true });
 
     await member.timeout(minutes * 60_000, `${reason} moderator: ${interaction.user.tag}`);
+    const record = addMute(interaction.guild.id, member.id, interaction.user.id, minutes, reason);
     await logModeration(client, interaction.guild, "member timed out", `${member.user.tag} (${member.id}) for ${formatDuration(minutes)}\nmoderator: ${interaction.user.tag}\nreason: ${reason}`, colors.danger);
+    await sendToChannel(client, client.config.channels.memberLog, {
+      embeds: [moderationSummaryEmbed(member, record)]
+    });
     await interaction.reply({ content: `${member.user.tag} was timed out for ${formatDuration(minutes)}.`, ephemeral: true });
   }
 };

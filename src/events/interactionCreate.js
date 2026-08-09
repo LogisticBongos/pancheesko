@@ -2,24 +2,19 @@ const { Events } = require("discord.js");
 const { colors, logEmbed } = require("../utils/embeds");
 const { logModeration } = require("../utils/logging");
 const { ROLE_GROUP_SELECT_PREFIX, updateRoleGroup } = require("../utils/roles");
-const { INTRO_MODAL_ID, VERIFY_BUTTON_ID, finishVerification, startVerification } = require("../utils/onboarding");
+const { VERIFY_BUTTON_ID, verifyMember } = require("../utils/onboarding");
 
 module.exports = {
   name: Events.InteractionCreate,
   async execute(interaction, client) {
     try {
       if (interaction.isButton() && interaction.customId === VERIFY_BUTTON_ID) {
-        await startVerification(interaction);
+        await verifyMember(interaction);
         return;
       }
 
       if (interaction.isStringSelectMenu() && interaction.customId.startsWith(ROLE_GROUP_SELECT_PREFIX)) {
         await updateRoleGroup(interaction);
-        return;
-      }
-
-      if (interaction.isModalSubmit() && interaction.customId === INTRO_MODAL_ID) {
-        await finishVerification(interaction);
         return;
       }
 
