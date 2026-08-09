@@ -1,7 +1,7 @@
 const { PermissionFlagsBits, SlashCommandBuilder } = require("discord.js");
 const { colors } = require("../../utils/embeds");
 const { logModeration } = require("../../utils/logging");
-const { canBotModerate, canModerateMember } = require("../../utils/moderation");
+const { canBotModerate, canModerateMember, sendModerationDm } = require("../../utils/moderation");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -18,8 +18,9 @@ module.exports = {
     if (!canModerateMember(interaction.member, member)) return interaction.reply({ content: "you cannot kick that member.", ephemeral: true });
     if (!canBotModerate(member)) return interaction.reply({ content: "my role is not high enough to kick that member.", ephemeral: true });
 
+    const dmSent = await sendModerationDm(member, "kicked", reason);
     await member.kick(`${reason} moderator: ${interaction.user.tag}`);
-    await logModeration(client, interaction.guild, "member kicked", `${member.user.tag} (${member.id})\nmoderator: ${interaction.user.tag}\nreason: ${reason}`, colors.danger);
-    await interaction.reply({ content: `${member.user.tag} was kicked.`, ephemeral: true });
+    await logModeration(client, interaction.guild, "member kicked", `${member.user.tag} (${member.id})\nmoderator: ${interaction.user.tag}\nreason: ${reason}\ndm sent: ${dmSent ? "yes" : "no"}`, colors.danger);
+    await interaction.reply({ content: `${member.user.tag} was kicked. dm sent: ${dmSent ? "yes" : "no"}.`, ephemeral: true });
   }
 };

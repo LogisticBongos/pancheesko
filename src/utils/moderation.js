@@ -16,13 +16,17 @@ function canBotModerate(target) {
   return botMember.roles.highest.comparePositionTo(target.roles.highest) > 0;
 }
 
-async function sendBanDm(member, reason) {
+async function sendModerationDm(member, action, reason) {
   try {
-    await member.send(`you were banned from ${member.guild.name}.\nreason: ${reason}`);
+    await member.send(`you were ${action} from ${member.guild.name}.\nreason: ${reason}`);
     return true;
   } catch {
     return false;
   }
+}
+
+async function sendBanDm(member, reason) {
+  return sendModerationDm(member, "banned", reason);
 }
 
 async function safeBanMinus15(member, client, trigger = "role check") {
@@ -77,5 +81,6 @@ module.exports = {
   canModerateMember,
   formatDuration,
   sendBanDm,
+  sendModerationDm,
   safeBanMinus15
 };
