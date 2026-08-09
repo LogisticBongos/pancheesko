@@ -1,7 +1,7 @@
 const { PermissionFlagsBits, SlashCommandBuilder } = require("discord.js");
 const { colors } = require("../../utils/embeds");
 const { logModeration } = require("../../utils/logging");
-const { canBotModerate, canModerateMember } = require("../../utils/moderation");
+const { canBotModerate, canModerateMember, sendBanDm } = require("../../utils/moderation");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -20,8 +20,9 @@ module.exports = {
     if (!canModerateMember(interaction.member, member)) return interaction.reply({ content: "you cannot ban that member.", ephemeral: true });
     if (!canBotModerate(member)) return interaction.reply({ content: "my role is not high enough to ban that member.", ephemeral: true });
 
+    const dmSent = await sendBanDm(member, reason);
     await member.ban({ reason: `${reason} moderator: ${interaction.user.tag}`, deleteMessageSeconds });
-    await logModeration(client, interaction.guild, "member banned", `${member.user.tag} (${member.id})\nmoderator: ${interaction.user.tag}\nreason: ${reason}`, colors.danger);
-    await interaction.reply({ content: `${member.user.tag} was banned.`, ephemeral: true });
+    await logModeration(client, interaction.guild, "member banned", `${member.user.tag} (${member.id})\nmoderator: ${interaction.user.tag}\nreason: ${reason}\ndm sent: ${dmSent ? "yes" : "no"}`, colors.danger);
+    await interaction.reply({ content: `${member.user.tag} was banned. dm sent: ${dmSent ? "yes" : "no"}.`, ephemeral: true });
   }
 };

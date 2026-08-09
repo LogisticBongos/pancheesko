@@ -16,6 +16,15 @@ function canBotModerate(target) {
   return botMember.roles.highest.comparePositionTo(target.roles.highest) > 0;
 }
 
+async function sendBanDm(member, reason) {
+  try {
+    await member.send(`you were banned from ${member.guild.name}.\nreason: ${reason}`);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 async function safeBanMinus15(member, client, trigger = "role check") {
   const { autoBan } = client.config;
   if (!autoBan.minus15RoleId) return { action: "skipped", reason: "auto ban minus-15 role id is not configured." };
@@ -44,12 +53,13 @@ async function safeBanMinus15(member, client, trigger = "role check") {
     return { action: "dry-run", reason };
   }
 
+  const dmSent = await sendBanDm(member, reason);
   await member.ban({ reason });
   await logModeration(
     client,
     member.guild,
     "auto-banned member",
-    `${member.user.tag} (${member.id}) was banned because they had ${role.name}.\nreason: ${reason}`,
+    `${member.user.tag} (${member.id}) was banned because they had ${role.name}.\nreason: ${reason}\ndm sent: ${dmSent ? "yes" : "no"}`,
     colors.danger
   );
   return { action: "banned", reason };
@@ -66,5 +76,6 @@ module.exports = {
   canBotModerate,
   canModerateMember,
   formatDuration,
+  sendBanDm,
   safeBanMinus15
 };
