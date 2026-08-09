@@ -1,6 +1,6 @@
 const { PermissionFlagsBits, SlashCommandBuilder } = require("discord.js");
 const { baseEmbed, colors } = require("../../utils/embeds");
-const { guildResponses, normaliseTrigger, removeResponse, setResponse } = require("../../utils/responses");
+const { guildResponses, normaliseTrigger, removeResponse, responseList, setResponse } = require("../../utils/responses");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -10,7 +10,7 @@ module.exports = {
     .addSubcommand((subcommand) =>
       subcommand
         .setName("add")
-        .setDescription("add or update a trigger response.")
+        .setDescription("add a possible reply for a trigger.")
         .addStringOption((option) =>
           option
             .setName("trigger")
@@ -51,8 +51,8 @@ module.exports = {
       const trigger = interaction.options.getString("trigger", true);
       const response = interaction.options.getString("response", true);
 
-      setResponse(interaction.guild.id, trigger, response, interaction.user.id);
-      await interaction.editReply(`saved response for \`${normaliseTrigger(trigger)}\`.`);
+      const count = setResponse(interaction.guild.id, trigger, response, interaction.user.id);
+      await interaction.editReply(`saved response for \`${normaliseTrigger(trigger)}\` (${count} total).`);
       return;
     }
 
@@ -66,7 +66,10 @@ module.exports = {
 
     const responses = guildResponses(interaction.guild.id);
     const lines = Object.entries(responses).map(([trigger, entry]) => {
-      return `\`${trigger}\` -> ${entry.response.slice(0, 80)}`;
+      const options = responseList(entry);
+      const preview = options[0]?.slice(0, 80) || "empty response";
+      const label = options.length === 1 ? "1 reply" : `${options.length} replies`;
+      return `\`${trigger}\` -> ${label} (${preview})`;
     });
 
     const embed = baseEmbed(client, { color: colors.info })

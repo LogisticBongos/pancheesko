@@ -22,15 +22,32 @@ function guildResponses(guildId) {
   return responses[guildId] || {};
 }
 
+function responseList(entry) {
+  if (!entry) return [];
+  if (Array.isArray(entry.responses)) return entry.responses;
+  if (entry.response) return [entry.response];
+  return [];
+}
+
 function setResponse(guildId, trigger, response, authorId) {
   const responses = readResponses();
+  const key = normaliseTrigger(trigger);
+  const existing = responses[guildId]?.[key];
+  const options = responseList(existing);
+
+  if (!options.includes(response)) {
+    options.push(response);
+  }
+
   responses[guildId] ||= {};
-  responses[guildId][normaliseTrigger(trigger)] = {
-    response,
+  responses[guildId][key] = {
+    responses: options,
     authorId,
     updatedAt: new Date().toISOString()
   };
   writeResponses(responses);
+
+  return options.length;
 }
 
 function removeResponse(guildId, trigger) {
@@ -50,9 +67,18 @@ function findResponse(guildId, content) {
   const responses = guildResponses(guildId);
   const lowered = content.toLowerCase();
 
-  return Object.entries(responses).find(([trigger]) => {
+  const match = Object.entries(responses).find(([trigger]) => {
     return lowered.split(/\s+/).includes(trigger) || lowered.includes(trigger);
   });
+
+  if (!match) return null;
+
+  const [trigger, entry] = match;
+  const options = responseList(entry);
+  if (!options.length) return null;
+
+  const response = options[Math.floor(Math.random() * options.length)];
+  return [trigger, { ...entry, response, responses: options }];
 }
 
 module.exports = {
@@ -60,5 +86,6 @@ module.exports = {
   guildResponses,
   normaliseTrigger,
   removeResponse,
+  responseList,
   setResponse
 };
