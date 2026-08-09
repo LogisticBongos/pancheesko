@@ -115,6 +115,7 @@ const config = {
     ],
     activities: [
       { key: "deadChat", label: "dead chat", roleId: process.env.DEAD_CHAT_ROLE_ID },
+      { key: "mail", label: "mail", roleId: process.env.MAIL_ROLE_ID },
       { key: "movieNight", label: "movie night", roleId: process.env.MOVIE_NIGHT_ROLE_ID },
       { key: "vcPing", label: "vc ping", roleId: process.env.VC_PING_ROLE_ID },
       { key: "gameNight", label: "game night", roleId: process.env.GAME_NIGHT_ROLE_ID },
