@@ -62,11 +62,13 @@ function rolePanel(config, groupName) {
 }
 
 async function updateRoleGroup(interaction) {
+  await interaction.deferReply({ ephemeral: true });
+
   const groupName = interaction.customId.slice(ROLE_GROUP_SELECT_PREFIX.length);
   const group = interaction.client.config.roleGroups[groupName];
 
   if (!group) {
-    await interaction.reply({ content: "that role menu is not configured anymore.", ephemeral: true });
+    await interaction.editReply("that role menu is not configured anymore.");
     return;
   }
 
@@ -78,16 +80,13 @@ async function updateRoleGroup(interaction) {
     if (!role) continue;
 
     if (selectedRoleIds.includes(roleId)) {
-      await interaction.member.roles.add(role, `Selected ${groupName} role`);
+      await interaction.member.roles.add(role, `selected ${groupName} role`);
     } else {
-      await interaction.member.roles.remove(role, `Updated ${groupName} roles`);
+      await interaction.member.roles.remove(role, `updated ${groupName} roles`);
     }
   }
 
-  await interaction.reply({
-    content: "your roles have been updated.",
-    ephemeral: true
-  });
+  await interaction.editReply("your roles have been updated.");
 }
 
 module.exports = {
