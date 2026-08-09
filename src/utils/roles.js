@@ -6,6 +6,7 @@ const { colors } = require("./embeds");
 const { logMemberEvent } = require("./logging");
 
 const ROLE_GROUP_SELECT_PREFIX = "role_group:";
+const SINGLE_CHOICE_GROUPS = new Set(["colors"]);
 
 function configuredRoles(group) {
   return group.filter((role) => role.roleId);
@@ -34,7 +35,7 @@ function rolePanels(config) {
   const panels = [];
 
   const gameRow = roleGroupRow("games", config.roleGroups.games, {
-    placeholder: "Pick your game roles"
+    placeholder: "toggle game roles"
   });
   if (gameRow) {
     panels.push({
@@ -57,7 +58,7 @@ function rolePanels(config) {
   }
 
   const activityRow = roleGroupRow("activities", config.roleGroups.activities, {
-    placeholder: "pick activity roles"
+    placeholder: "toggle activity roles"
   });
   if (activityRow) {
     panels.push({
@@ -89,22 +90,39 @@ async function updateRoleGroup(interaction) {
   const selectedRoleIds = interaction.values;
   const addedRoles = [];
   const removedRoles = [];
+  const singleChoice = SINGLE_CHOICE_GROUPS.has(groupName);
 
   for (const roleId of managedRoleIds) {
     const role = interaction.guild.roles.cache.get(roleId);
     if (!role) continue;
 
     const hadRole = interaction.member.roles.cache.has(roleId);
-    if (selectedRoleIds.includes(roleId)) {
+    const selected = selectedRoleIds.includes(roleId);
+
+    if (singleChoice && selected) {
       if (!hadRole) {
         await interaction.member.roles.add(role, `selected ${groupName} role`);
         addedRoles.push(role);
       }
-    } else {
+      continue;
+    }
+
+    if (singleChoice) {
       if (hadRole) {
         await interaction.member.roles.remove(role, `updated ${groupName} roles`);
         removedRoles.push(role);
       }
+      continue;
+    }
+
+    if (!selected) continue;
+
+    if (hadRole) {
+      await interaction.member.roles.remove(role, `toggled ${groupName} role off`);
+      removedRoles.push(role);
+    } else {
+      await interaction.member.roles.add(role, `toggled ${groupName} role on`);
+      addedRoles.push(role);
     }
   }
 

@@ -28,7 +28,7 @@ const embedText = {
   },
   gameRoles: {
     title: "game roles", // This becomes .setTitle("...") above the game role menu.
-    description: "choose the games you play or want pings/channels for. you can choose more than one."
+    description: "pick a role to turn it on or off. you can choose more than one."
   },
   colorRoles: {
     title: "colour roles", // This becomes .setTitle("...") above the colour role menu.
@@ -36,7 +36,7 @@ const embedText = {
   },
   activityRoles: {
     title: "activity roles", // This becomes .setTitle("...") above the activity role menu.
-    description: "choose the pings you want for server stuff. you can choose more than one."
+    description: "pick a role to turn it on or off. you can choose more than one."
   },
   intro: {
     title: "introductions", // This becomes .setTitle("...") on the intro embed.
