@@ -2,6 +2,8 @@ const {
   ActionRowBuilder,
   StringSelectMenuBuilder
 } = require("discord.js");
+const { colors } = require("./embeds");
+const { logMemberEvent } = require("./logging");
 
 const ROLE_GROUP_SELECT_PREFIX = "role_group:";
 
@@ -62,32 +64,54 @@ function rolePanel(config, groupName) {
 }
 
 async function updateRoleGroup(interaction) {
+  await interaction.deferReply({ ephemeral: true });
+
   const groupName = interaction.customId.slice(ROLE_GROUP_SELECT_PREFIX.length);
   const group = interaction.client.config.roleGroups[groupName];
 
   if (!group) {
-    await interaction.reply({ content: "that role menu is not configured anymore.", ephemeral: true });
+    await interaction.editReply("that role menu is not configured anymore.");
     return;
   }
 
   const managedRoleIds = configuredRoles(group).map((role) => role.roleId);
   const selectedRoleIds = interaction.values;
+  const addedRoles = [];
+  const removedRoles = [];
 
   for (const roleId of managedRoleIds) {
     const role = interaction.guild.roles.cache.get(roleId);
     if (!role) continue;
 
+    const hadRole = interaction.member.roles.cache.has(roleId);
     if (selectedRoleIds.includes(roleId)) {
-      await interaction.member.roles.add(role, `Selected ${groupName} role`);
+      if (!hadRole) {
+        await interaction.member.roles.add(role, `selected ${groupName} role`);
+        addedRoles.push(role);
+      }
     } else {
-      await interaction.member.roles.remove(role, `Updated ${groupName} roles`);
+      if (hadRole) {
+        await interaction.member.roles.remove(role, `updated ${groupName} roles`);
+        removedRoles.push(role);
+      }
     }
   }
 
-  await interaction.reply({
-    content: "your roles have been updated.",
-    ephemeral: true
-  });
+  if (addedRoles.length || removedRoles.length) {
+    const lines = [];
+    if (addedRoles.length) lines.push(`added: ${addedRoles.map((role) => role.name).join(", ")}`);
+    if (removedRoles.length) lines.push(`removed: ${removedRoles.map((role) => role.name).join(", ")}`);
+
+    await logMemberEvent(
+      interaction.client,
+      interaction.guild,
+      "role update",
+      `${interaction.user.tag} (${interaction.user.id}) updated ${groupName} roles.\n${lines.join("\n")}`,
+      colors.info
+    );
+  }
+
+  await interaction.editReply("your roles have been updated.");
 }
 
 module.exports = {
