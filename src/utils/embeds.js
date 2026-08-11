@@ -12,10 +12,14 @@ const colors = {
 // Leaving a value blank means the bot skips that title/description/field.
 const embedText = {
   welcome: {
-    title: "", // This becomes .setTitle("...") on the welcome embed.
-    description: "", // This becomes .setDescription("...") on the welcome embed.
-    firstFieldName: "", // This becomes the first .addFields({ name: "..." }).
-    firstFieldValue: "" // This becomes the first .addFields({ value: "..." }).
+    title: "welcome to pancheesko", // This becomes .setTitle("...") on the welcome embed.
+    description: "Please follow rules just dont be mean essentially and dont be surprised if servers a little dead its still new thanks you", // This becomes .setDescription("...") on the welcome embed.
+    rulesFieldName: "rules", // This becomes a section heading in the welcome embed.
+    rulesFieldValue: "be normal, be kind, and keep the server easy to hang out in.",
+    rolesFieldName: "roles", // This becomes a section heading in the welcome embed.
+    rolesFieldValue: "please visit {rolesChannel} and pick the roles you want.",
+    introFieldName: "intro", // This becomes a section heading in the welcome embed.
+    introFieldValue: "introductions are optional, but you can say hi if you want."
   },
   verify: {
     title: "verify", // This becomes .setTitle("...") on the verify embed.
@@ -67,10 +71,44 @@ function baseEmbed(client, options = {}) {
 }
 
 function welcomeEmbed(member, client) {
+  const rolesChannel = client.config.channels.roles ? `<#${client.config.channels.roles}>` : "#roles";
+  const welcomeText = embedText.welcome;
   const embed = baseEmbed(client, { color: colors.brand })
     .setThumbnail(member.user.displayAvatarURL({ size: 256 }));
 
-  return applyText(embed, embedText.welcome);
+  applyText(embed, welcomeText);
+
+  embed.addFields(
+    {
+      name: welcomeText.rulesFieldName || "rules",
+      value: welcomeText.rulesFieldValue || "please follow the rules.",
+      inline: false
+    },
+    {
+      name: welcomeText.rolesFieldName || "roles",
+      value: (welcomeText.rolesFieldValue || "please visit {rolesChannel} and pick your roles.").replace("{rolesChannel}", rolesChannel),
+      inline: false
+    },
+    {
+      name: welcomeText.introFieldName || "intro",
+      value: welcomeText.introFieldValue || "say hi when you are ready.",
+      inline: false
+    }
+  );
+
+  if (client.config.assets.welcomeGifUrl) {
+    embed.setImage(client.config.assets.welcomeGifUrl);
+  }
+
+  return embed;
+}
+
+function welcomePayload(member, client) {
+  return {
+    content: `${member}`,
+    embeds: [welcomeEmbed(member, client)],
+    allowedMentions: { users: [member.id] }
+  };
 }
 
 function verifyEmbed(client) {
@@ -113,6 +151,7 @@ module.exports = {
   logEmbed,
   roleGroupEmbed,
   rolesEmbed,
+  welcomePayload,
   verifiedEmbed,
   verifyEmbed,
   welcomeEmbed

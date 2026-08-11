@@ -26,6 +26,7 @@ const commandGroups = [
       "`/setup game-roles` - posts the game role menu.",
       "`/setup colour-roles` - posts the colour role menu.",
       "`/setup activity-roles` - posts the activity ping role menu.",
+      "`/test-welcome` - sends a test welcome message to a channel.",
       "`/response` - makes trigger words that the bot replies to.",
       "`/config-check` - checks what ids are set in `.env`.",
       "`/scan-minus15` - previews or runs the minus-15 role ban scan."

@@ -1,15 +1,12 @@
 const { Events } = require("discord.js");
-const { colors, welcomeEmbed } = require("../utils/embeds");
+const { colors, welcomePayload } = require("../utils/embeds");
 const { logMemberEvent, sendToChannel } = require("../utils/logging");
 const { safeBanMinus15 } = require("../utils/moderation");
 
 module.exports = {
   name: Events.GuildMemberAdd,
   async execute(member, client) {
-    await sendToChannel(client, client.config.channels.general, {
-      content: `welcome ${member}. Please follow rules just dont be mean essentially and dont be surprised if servers a little dead its still new thanks you`,
-      embeds: [welcomeEmbed(member, client)]
-    });
+    await sendToChannel(client, client.config.channels.general, welcomePayload(member, client));
 
     if (client.config.onboarding.unverifiedRoleId) {
       const role = member.guild.roles.cache.get(client.config.onboarding.unverifiedRoleId);

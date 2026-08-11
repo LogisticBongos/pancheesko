@@ -12,6 +12,9 @@ const config = {
   guildId: process.env.GUILD_ID,
   communityName: process.env.COMMUNITY_NAME || "pancheesko",
   communityTagline: process.env.COMMUNITY_TAGLINE || "",
+  assets: {
+    welcomeGifUrl: process.env.WELCOME_GIF_URL
+  },
   channels: {
     mail: process.env.MAIL_CHANNEL_ID,
     intro: process.env.INTRO_CHANNEL_ID,
