@@ -33,7 +33,7 @@ const embedText = {
   },
   gameRoles: {
     title: "game roles", // This becomes .setTitle("...") above the game role menu.
-    description: "pick a role to turn it on or off. you can choose more than one."
+    description: "select every game role you want to have. anything unselected will be removed."
   },
   colorRoles: {
     title: "colour roles", // This becomes .setTitle("...") above the colour role menu.
@@ -41,7 +41,7 @@ const embedText = {
   },
   activityRoles: {
     title: "activity roles", // This becomes .setTitle("...") above the activity role menu.
-    description: "pick a role to turn it on or off. you can choose more than one."
+    description: "select every activity role you want to have. anything unselected will be removed."
   },
   intro: {
     title: "introductions", // This becomes .setTitle("...") on the intro embed.
