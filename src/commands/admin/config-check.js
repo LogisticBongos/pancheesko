@@ -21,6 +21,7 @@ module.exports = {
         { name: "channels", value: channelStatus || "none" },
         { name: "member role", value: client.config.onboarding.memberRoleId ? "set" : "missing", inline: true },
         { name: "unverified role", value: client.config.onboarding.unverifiedRoleId ? "set" : "optional / missing", inline: true },
+        { name: "member counters", value: client.config.channels.memberCount && client.config.channels.humanCount ? "set" : "missing", inline: true },
         { name: "game roles", value: `${gameRoles}`, inline: true },
         { name: "colour roles", value: `${colorRoles}`, inline: true },
         { name: "activity roles", value: `${activityRoles}`, inline: true },

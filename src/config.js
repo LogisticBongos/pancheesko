@@ -21,6 +21,8 @@ const config = {
     verify: process.env.VERIFY_CHANNEL_ID,
     memberLog: process.env.LOG_CHANNEL_ID,
     modLog: process.env.MOD_LOG_CHANNEL_ID,
+    memberCount: process.env.MEMBER_COUNT_CHANNEL_ID,
+    humanCount: process.env.HUMAN_COUNT_CHANNEL_ID,
     rules: process.env.RULES_CHANNEL_ID,
     roles: process.env.ROLES_CHANNEL_ID,
     secret: process.env.SECRET_CHANNEL_ID,

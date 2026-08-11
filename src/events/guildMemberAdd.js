@@ -1,6 +1,7 @@
 const { Events } = require("discord.js");
 const { colors, welcomePayload } = require("../utils/embeds");
 const { logMemberEvent, sendToChannel } = require("../utils/logging");
+const { scheduleMemberCounterUpdate } = require("../utils/memberCounters");
 const { safeBanMinus15 } = require("../utils/moderation");
 
 module.exports = {
@@ -21,6 +22,7 @@ module.exports = {
       colors.success
     );
 
+    scheduleMemberCounterUpdate(client, member.guild);
     await safeBanMinus15(member, client, "member join");
   }
 };

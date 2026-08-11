@@ -3,6 +3,7 @@ const { introPromptEmbed, roleGroupEmbed, verifyEmbed } = require("../../utils/e
 const { verifyButtonRow } = require("../../utils/onboarding");
 const { rolePanel } = require("../../utils/roles");
 const { sendToChannel } = require("../../utils/logging");
+const { createMemberCounters } = require("../../utils/memberCounters");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -28,10 +29,30 @@ module.exports = {
       subcommand
         .setName("activity-roles")
         .setDescription("Post the activity role menu to the roles channel.")
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("member-counters")
+        .setDescription("Create locked voice channels for member counts.")
     ),
   async execute(interaction, client) {
     const subcommand = interaction.options.getSubcommand();
     await interaction.deferReply({ ephemeral: true });
+
+    if (subcommand === "member-counters") {
+      const { humanChannel, totalChannel } = await createMemberCounters(client, interaction.guild);
+      await interaction.editReply(
+        [
+          "created member counter voice channels.",
+          "paste these into `.env`:",
+          "```env",
+          `MEMBER_COUNT_CHANNEL_ID=${totalChannel.id}`,
+          `HUMAN_COUNT_CHANNEL_ID=${humanChannel.id}`,
+          "```"
+        ].join("\n")
+      );
+      return;
+    }
 
     if (subcommand === "game-roles" || subcommand === "colour-roles" || subcommand === "activity-roles") {
       const groups = {

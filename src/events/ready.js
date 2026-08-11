@@ -1,4 +1,5 @@
 const { ActivityType, Events } = require("discord.js");
+const { updateMemberCountersNow } = require("../utils/memberCounters");
 const { safeBanMinus15 } = require("../utils/moderation");
 
 module.exports = {
@@ -10,6 +11,10 @@ module.exports = {
       activities: [{ name: "pancheesko", type: ActivityType.Watching }],
       status: "online"
     });
+
+    for (const guild of client.guilds.cache.values()) {
+      await updateMemberCountersNow(client, guild);
+    }
 
     if (!client.config.autoBan.scanOnReady || !client.config.autoBan.minus15RoleId) return;
 
