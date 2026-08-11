@@ -6,6 +6,7 @@ const {
 const { embedText } = require("./embeds");
 
 const VERIFY_BUTTON_ID = "onboarding_verify";
+const ROLE_REMINDER_DELETE_MS = 60_000;
 
 function verifyButtonRow() {
   const label = embedText.verify.buttonLabel || "i agree";
@@ -38,6 +39,22 @@ async function verifyMember(interaction) {
     content: `you're verified. ${rolesStep}`,
     ephemeral: true
   });
+
+  if (!channels.roles) return;
+
+  const rolesChannel = await interaction.client.channels.fetch(channels.roles).catch(() => null);
+  if (!rolesChannel?.isTextBased()) return;
+
+  const reminder = await rolesChannel.send({
+    content: `${member}, get your roles here when you're ready.`,
+    allowedMentions: { users: [member.id] }
+  }).catch(() => null);
+
+  if (reminder) {
+    setTimeout(() => {
+      reminder.delete().catch(() => {});
+    }, ROLE_REMINDER_DELETE_MS);
+  }
 }
 
 module.exports = {
