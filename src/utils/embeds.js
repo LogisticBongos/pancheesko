@@ -2,6 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 
 const colors = {
   brand: 0xffc857,
+  white: 0xffffff,
   success: 0x43b581,
   danger: 0xed4245,
   info: 0x5865f2,
@@ -15,11 +16,11 @@ const embedText = {
     title: "welcome to pancheesko", // This becomes .setTitle("...") on the welcome embed.
     description: "Please follow rules just dont be mean essentially and dont be surprised if servers a little dead its still new thanks you", // This becomes .setDescription("...") on the welcome embed.
     rulesFieldName: "rules", // This becomes a section heading in the welcome embed.
-    rulesFieldValue: "be normal, be kind, and keep the server easy to hang out in.",
+    rulesFieldValue: "be normal, be kind, and keep the server easy to hang out in. read rules.",
     rolesFieldName: "roles", // This becomes a section heading in the welcome embed.
     rolesFieldValue: "please visit {rolesChannel} and pick the roles you want.",
     introFieldName: "intro", // This becomes a section heading in the welcome embed.
-    introFieldValue: "introductions are optional, but you can say hi if you want."
+    introFieldValue: "introductions are optional, but you can say hi in {introChannel} if you want."
   },
   verify: {
     title: "verify", // This becomes .setTitle("...") on the verify embed.
@@ -72,8 +73,9 @@ function baseEmbed(client, options = {}) {
 
 function welcomeEmbed(member, client) {
   const rolesChannel = client.config.channels.roles ? `<#${client.config.channels.roles}>` : "#roles";
+  const introChannel = client.config.channels.intro ? `<#${client.config.channels.intro}>` : "#intro";
   const welcomeText = embedText.welcome;
-  const embed = baseEmbed(client, { color: colors.brand })
+  const embed = baseEmbed(client, { color: colors.white })
     .setThumbnail(member.user.displayAvatarURL({ size: 256 }));
 
   applyText(embed, welcomeText);
@@ -91,7 +93,7 @@ function welcomeEmbed(member, client) {
     },
     {
       name: welcomeText.introFieldName || "intro",
-      value: welcomeText.introFieldValue || "say hi when you are ready.",
+      value: (welcomeText.introFieldValue || "say hi in {introChannel} when you are ready.").replace("{introChannel}", introChannel),
       inline: false
     }
   );
