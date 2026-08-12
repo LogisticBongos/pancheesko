@@ -125,6 +125,10 @@ const config = {
       { key: "vcPing", label: "vc ping", roleId: process.env.VC_PING_ROLE_ID },
       { key: "gameNight", label: "game night", roleId: process.env.GAME_NIGHT_ROLE_ID },
       { key: "friendslop", label: "friendslop", roleId: process.env.FRIENDSLOP_ROLE_ID }
+    ],
+    platforms: [
+      { key: "pc", label: "pc", roleId: process.env.PC_ROLE_ID },
+      { key: "console", label: "console", roleId: process.env.CONSOLE_ROLE_ID }
     ]
   }
 };

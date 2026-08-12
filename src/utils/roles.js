@@ -67,6 +67,17 @@ function rolePanels(config) {
     });
   }
 
+  const platformRow = roleGroupRow("platforms", config.roleGroups.platforms, {
+    placeholder: "pick pc or console"
+  });
+  if (platformRow) {
+    panels.push({
+      group: "platforms",
+      row: platformRow,
+      singleChoice: false
+    });
+  }
+
   return panels;
 }
 

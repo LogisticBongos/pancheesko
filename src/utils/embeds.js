@@ -43,6 +43,10 @@ const embedText = {
     title: "activity roles", // This becomes .setTitle("...") above the activity role menu.
     description: "select every activity role you want to have. anything unselected will be removed."
   },
+  platformRoles: {
+    title: "platform roles", // This becomes .setTitle("...") above the platform role menu.
+    description: "select pc, console, or both."
+  },
   intro: {
     title: "introductions", // This becomes .setTitle("...") on the intro embed.
     description: "introductions are optional. if you want, say your name, games you play, music you like, and when you are usually online."
@@ -125,7 +129,8 @@ function roleGroupEmbed(client, group) {
   const textByGroup = {
     activities: embedText.activityRoles,
     colors: embedText.colorRoles,
-    games: embedText.gameRoles
+    games: embedText.gameRoles,
+    platforms: embedText.platformRoles
   };
   const text = textByGroup[group] || embedText.roles;
   return applyText(baseEmbed(client, { color: colors.info }), text);

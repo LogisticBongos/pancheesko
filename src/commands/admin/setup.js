@@ -32,6 +32,11 @@ module.exports = {
     )
     .addSubcommand((subcommand) =>
       subcommand
+        .setName("platform-roles")
+        .setDescription("Post the pc/console role menu to the roles channel.")
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
         .setName("member-counters")
         .setDescription("Create locked voice channels for member counts.")
     ),
@@ -54,16 +59,18 @@ module.exports = {
       return;
     }
 
-    if (subcommand === "game-roles" || subcommand === "colour-roles" || subcommand === "activity-roles") {
+    if (subcommand === "game-roles" || subcommand === "colour-roles" || subcommand === "activity-roles" || subcommand === "platform-roles") {
       const groups = {
         "activity-roles": "activities",
         "colour-roles": "colors",
-        "game-roles": "games"
+        "game-roles": "games",
+        "platform-roles": "platforms"
       };
       const labels = {
         "activity-roles": "activity roles",
         "colour-roles": "colour roles",
-        "game-roles": "game roles"
+        "game-roles": "game roles",
+        "platform-roles": "platform roles"
       };
       const group = groups[subcommand];
       const panel = rolePanel(client.config, group);
