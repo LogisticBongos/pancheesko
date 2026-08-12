@@ -63,12 +63,22 @@ function removeResponse(guildId, trigger) {
   return existed;
 }
 
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function triggerMatches(content, trigger) {
+  const words = trigger.split(/\s+/).map(escapeRegex).join("\\s+");
+  const pattern = new RegExp(`(^|[^\\p{L}\\p{N}_])${words}(?=$|[^\\p{L}\\p{N}_])`, "iu");
+  return pattern.test(content);
+}
+
 function findResponse(guildId, content) {
   const responses = guildResponses(guildId);
   const lowered = content.toLowerCase();
 
   const match = Object.entries(responses).find(([trigger]) => {
-    return lowered.split(/\s+/).includes(trigger) || lowered.includes(trigger);
+    return triggerMatches(lowered, trigger);
   });
 
   if (!match) return null;
