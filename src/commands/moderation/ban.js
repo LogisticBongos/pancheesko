@@ -2,6 +2,7 @@ const { PermissionFlagsBits, SlashCommandBuilder } = require("discord.js");
 const { colors } = require("../../utils/embeds");
 const { logModeration } = require("../../utils/logging");
 const { canBotModerate, canModerateMember, sendBanDm } = require("../../utils/moderation");
+const { addBan } = require("../../utils/moderationRecords");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -22,6 +23,7 @@ module.exports = {
 
     const dmSent = await sendBanDm(member, reason);
     await member.ban({ reason: `${reason} moderator: ${interaction.user.tag}`, deleteMessageSeconds });
+    addBan(interaction.guild.id, member.id, interaction.user.id, reason, { dmSent, source: "command" });
     await logModeration(client, interaction.guild, "member banned", `${member.user.tag} (${member.id})\nmoderator: ${interaction.user.tag}\nreason: ${reason}\ndm sent: ${dmSent ? "yes" : "no"}`, colors.danger);
     await interaction.reply({ content: `${member.user.tag} was banned. dm sent: ${dmSent ? "yes" : "no"}.`, ephemeral: true });
   }

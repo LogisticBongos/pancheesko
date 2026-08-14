@@ -38,6 +38,7 @@ const commandGroups = [
     name: "mod tools",
     value: [
       "`/ban` - bans someone.",
+      "`/bans` - lists banned users and how pancheesko handled them.",
       "`/kick` - kicks someone.",
       "`/timeout` - times someone out.",
       "`/untimeout` - removes a timeout.",

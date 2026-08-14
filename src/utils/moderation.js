@@ -1,6 +1,7 @@
 const { PermissionFlagsBits } = require("discord.js");
 const { colors } = require("./embeds");
 const { logModeration } = require("./logging");
+const { addBan } = require("./moderationRecords");
 
 function canModerateMember(actor, target) {
   if (!target || !actor) return false;
@@ -59,6 +60,7 @@ async function safeBanMinus15(member, client, trigger = "role check") {
 
   const dmSent = await sendBanDm(member, reason);
   await member.ban({ reason });
+  addBan(member.guild.id, member.id, client.user.id, reason, { dmSent, source: "minus-15 auto-ban" });
   await logModeration(
     client,
     member.guild,

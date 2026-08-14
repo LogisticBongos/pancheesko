@@ -17,8 +17,30 @@ function writeRecords(records) {
 
 function memberRecord(records, guildId, userId) {
   records[guildId] ||= {};
-  records[guildId][userId] ||= { warnings: [], mutes: [] };
+  records[guildId][userId] ||= { bans: [], warnings: [], mutes: [] };
+  records[guildId][userId].bans ||= [];
+  records[guildId][userId].warnings ||= [];
+  records[guildId][userId].mutes ||= [];
   return records[guildId][userId];
+}
+
+function guildRecords(guildId) {
+  const records = readRecords();
+  return records[guildId] || {};
+}
+
+function addBan(guildId, userId, moderatorId, reason, options = {}) {
+  const records = readRecords();
+  const record = memberRecord(records, guildId, userId);
+  record.bans.push({
+    moderatorId,
+    reason,
+    at: new Date().toISOString(),
+    dmSent: Boolean(options.dmSent),
+    source: options.source || "command"
+  });
+  writeRecords(records);
+  return record;
 }
 
 function addWarning(guildId, userId, moderatorId, reason) {
@@ -70,7 +92,9 @@ function moderationSummaryEmbed(member, record) {
 }
 
 module.exports = {
+  addBan,
   addMute,
   addWarning,
+  guildRecords,
   moderationSummaryEmbed
 };
