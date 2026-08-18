@@ -29,7 +29,7 @@ const commandGroups = [
       "`/setup platform-roles` - posts the pc/console role menu.",
       "`/setup member-counters` - creates the member count voice channels.",
       "`/test-welcome` - sends a test welcome message to a channel.",
-      "`/response` - makes trigger words that the bot replies to.",
+      "`/response` - makes, lists, and removes trigger replies.",
       "`/config-check` - checks what ids are set in `.env`.",
       "`/scan-minus15` - previews or runs the minus-15 role ban scan."
     ].join("\n")

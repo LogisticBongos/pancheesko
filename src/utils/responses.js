@@ -63,6 +63,43 @@ function removeResponse(guildId, trigger) {
   return existed;
 }
 
+function removeResponseText(guildId, response, trigger) {
+  const responses = readResponses();
+  const guild = responses[guildId];
+  if (!guild) return { removed: 0, triggers: [] };
+
+  const triggerEntries = trigger
+    ? [[normaliseTrigger(trigger), guild[normaliseTrigger(trigger)]]]
+    : Object.entries(guild);
+  const changedTriggers = [];
+  let removed = 0;
+
+  for (const [key, entry] of triggerEntries) {
+    const options = responseList(entry);
+    const nextOptions = options.filter((option) => option !== response);
+    const removedFromTrigger = options.length - nextOptions.length;
+    if (!removedFromTrigger) continue;
+
+    removed += removedFromTrigger;
+    changedTriggers.push(key);
+
+    if (nextOptions.length) {
+      guild[key] = {
+        ...entry,
+        responses: nextOptions,
+        updatedAt: new Date().toISOString()
+      };
+      delete guild[key].response;
+    } else {
+      delete guild[key];
+    }
+  }
+
+  if (removed) writeResponses(responses);
+
+  return { removed, triggers: changedTriggers };
+}
+
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -96,6 +133,7 @@ module.exports = {
   guildResponses,
   normaliseTrigger,
   removeResponse,
+  removeResponseText,
   responseList,
   setResponse
 };
