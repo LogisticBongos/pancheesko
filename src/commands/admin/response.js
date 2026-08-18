@@ -60,6 +60,12 @@ module.exports = {
       subcommand
         .setName("list")
         .setDescription("list trigger responses.")
+        .addStringOption((option) =>
+          option
+            .setName("trigger")
+            .setDescription("optional trigger to show every response for")
+            .setMaxLength(80)
+        )
   ),
   async execute(interaction, client) {
     await interaction.deferReply({ ephemeral: true });
@@ -98,6 +104,23 @@ module.exports = {
     }
 
     const responses = guildResponses(interaction.guild.id);
+    const trigger = interaction.options.getString("trigger");
+
+    if (trigger) {
+      const key = normaliseTrigger(trigger);
+      const options = responseList(responses[key]);
+      const lines = options.map((response, index) => {
+        return `**${index + 1}.** ${response}`;
+      });
+
+      const embed = baseEmbed(client, { color: colors.info })
+        .setTitle(`responses for ${key}`)
+        .setDescription(lines.length ? lines.join("\n\n").slice(0, 4096) : "no responses set for that trigger.");
+
+      await interaction.editReply({ embeds: [embed] });
+      return;
+    }
+
     const lines = Object.entries(responses).map(([trigger, entry]) => {
       const options = responseList(entry);
       const preview = options[0]?.slice(0, 80) || "empty response";
