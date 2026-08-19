@@ -100,6 +100,8 @@ const config = {
       { key: "overwatch", label: "overwatch", roleId: process.env.OVERWATCH_ROLE_ID },
       { key: "fortnite", label: "fortnite", roleId: process.env.FORTNITE_ROLE_ID },
       { key: "marvelRivals", label: "marvel rivals", roleId: process.env.MARVEL_RIVALS_ROLE_ID },
+      { key: "valorant", label: "valorant", roleId: process.env.VALORANT_ROLE_ID },
+      { key: "stardewValley", label: "stardew valley", roleId: process.env.STARDEW_VALLEY_ROLE_ID },
       { key: "genshin", label: "genshin", roleId: process.env.GENSHIN_ROLE_ID },
       { key: "dbd", label: "dbd", roleId: process.env.DBD_ROLE_ID }
     ],
