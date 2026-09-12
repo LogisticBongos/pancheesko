@@ -6,6 +6,8 @@ const { colors } = require("./embeds");
 const { logMemberEvent } = require("./logging");
 
 const ROLE_GROUP_SELECT_PREFIX = "role_group:";
+const CLEAR_ROLE_GROUP_VALUE = "clear_all";
+const MAX_SELECT_OPTIONS = 25;
 
 function configuredRoles(group) {
   return group.filter((role) => role.roleId);
@@ -14,17 +16,25 @@ function configuredRoles(group) {
 function roleGroupRow(groupName, roles, options = {}) {
   const configured = configuredRoles(roles);
   if (!configured.length) return null;
+  const visibleRoles = configured.slice(0, MAX_SELECT_OPTIONS - 1);
 
   const select = new StringSelectMenuBuilder()
     .setCustomId(`${ROLE_GROUP_SELECT_PREFIX}${groupName}`)
     .setPlaceholder(options.placeholder || "Pick roles")
     .setMinValues(0)
-    .setMaxValues(options.singleChoice ? 1 : Math.min(configured.length, 25))
+    .setMaxValues(options.singleChoice ? 1 : Math.min(visibleRoles.length, MAX_SELECT_OPTIONS))
     .addOptions(
-      configured.map((role) => ({
-        label: role.label,
-        value: role.roleId
-      }))
+      [
+        {
+          label: "clear all",
+          description: "remove every role from this menu",
+          value: CLEAR_ROLE_GROUP_VALUE
+        },
+        ...visibleRoles.map((role) => ({
+          label: role.label,
+          value: role.roleId
+        }))
+      ]
     );
 
   return new ActionRowBuilder().addComponents(select);
@@ -97,7 +107,9 @@ async function updateRoleGroup(interaction) {
   }
 
   const managedRoleIds = configuredRoles(group).map((role) => role.roleId);
-  const selectedRoleIds = interaction.values;
+  const selectedRoleIds = interaction.values.includes(CLEAR_ROLE_GROUP_VALUE)
+    ? []
+    : interaction.values;
   const addedRoles = [];
   const removedRoles = [];
 
