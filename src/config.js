@@ -25,6 +25,7 @@ const config = {
     humanCount: process.env.HUMAN_COUNT_CHANNEL_ID,
     rules: process.env.RULES_CHANNEL_ID,
     roles: process.env.ROLES_CHANNEL_ID,
+    boosterPerks: process.env.BOOSTER_PERKS_CHANNEL_ID,
     secret: process.env.SECRET_CHANNEL_ID,
     tiktok: process.env.TIKTOK_CHANNEL_ID,
     general: process.env.GENERAL_CHANNEL_ID,

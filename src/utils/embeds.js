@@ -55,6 +55,11 @@ const embedText = {
     title: "verified", // This becomes .setTitle("...") after someone verifies.
     description: "you are in. go pick your roles next."
   },
+  boost: {
+    title: "server boosted", // This becomes .setTitle("...") on the boost thank-you embed.
+    description: "thank you {booster} for boosting the server. check {boosterPerksChannel} for booster perks.\n\ncurrent boosts: {boostCount}",
+    imageUrl: "" // Optional image/gif shown inside the boost embed.
+  },
   infoPanel: {
     title: "server info", // This becomes .setTitle("...") on the server info button panel.
     description: "pick what you need below. only you will see the message that opens.",
@@ -163,6 +168,35 @@ function verifiedEmbed(client) {
   return applyText(baseEmbed(client, { color: colors.success }), embedText.verified);
 }
 
+function replaceTokens(text, tokens) {
+  return Object.entries(tokens).reduce(
+    (value, [token, replacement]) => value.replaceAll(`{${token}}`, replacement),
+    text || ""
+  );
+}
+
+function boostEmbed(member, client) {
+  const perksChannel = client.config.channels.boosterPerks
+    ? `<#${client.config.channels.boosterPerks}>`
+    : "#booster-perks";
+  const boostCount = member.guild.premiumSubscriptionCount || 0;
+  const boostText = embedText.boost;
+  const embed = baseEmbed(client, { color: colors.white });
+
+  applyText(embed, {
+    title: boostText.title,
+    description: replaceTokens(boostText.description, {
+      booster: `${member}`,
+      boosterPerksChannel: perksChannel,
+      boostCount: `${boostCount}`
+    })
+  });
+
+  if (boostText.imageUrl) embed.setImage(boostText.imageUrl);
+
+  return embed;
+}
+
 function infoPanelEmbed(client) {
   return applyText(baseEmbed(client, { color: colors.white }), embedText.infoPanel);
 }
@@ -185,6 +219,7 @@ function logEmbed(client, title, description, color = colors.muted) {
 
 module.exports = {
   baseEmbed,
+  boostEmbed,
   colors,
   embedText,
   introPromptEmbed,
