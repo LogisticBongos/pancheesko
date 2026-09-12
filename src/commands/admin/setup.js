@@ -1,6 +1,6 @@
 const { ChannelType, PermissionFlagsBits, SlashCommandBuilder } = require("discord.js");
-const { infoPanelEmbed, introPromptEmbed, roleGroupEmbed, verifyEmbed } = require("../../utils/embeds");
-const { infoPanelButtonRow } = require("../../utils/infoPanel");
+const { introPromptEmbed, roleGroupEmbed, verifyEmbed } = require("../../utils/embeds");
+const { buildPanelEmbed, createInfoPanel, dynamicPanelButtonRows } = require("../../utils/infoPanel");
 const { verifyButtonRow } = require("../../utils/onboarding");
 const { rolePanel } = require("../../utils/roles");
 const { sendToChannel } = require("../../utils/logging");
@@ -39,12 +39,39 @@ module.exports = {
     .addSubcommand((subcommand) =>
       subcommand
         .setName("info-panel")
-        .setDescription("Post the rules, faq, and info button panel.")
+        .setDescription("Post a custom button panel with private replies.")
+        .addStringOption((option) =>
+          option
+            .setName("title")
+            .setDescription("panel embed title.")
+            .setMaxLength(256)
+            .setRequired(true)
+        )
+        .addStringOption((option) =>
+          option
+            .setName("description")
+            .setDescription("panel embed text.")
+            .setMaxLength(4000)
+            .setRequired(true)
+        )
+        .addStringOption((option) =>
+          option
+            .setName("sections")
+            .setDescription("json list of button sections.")
+            .setMaxLength(4000)
+            .setRequired(true)
+        )
         .addChannelOption((option) =>
           option
             .setName("channel")
             .setDescription("where to post it. defaults to this channel.")
             .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
+        )
+        .addStringOption((option) =>
+          option
+            .setName("image")
+            .setDescription("optional image or gif url for the main panel.")
+            .setMaxLength(2048)
         )
     )
     .addSubcommand((subcommand) =>
@@ -73,10 +100,17 @@ module.exports = {
 
     if (subcommand === "info-panel") {
       const channel = interaction.options.getChannel("channel") || interaction.channel;
+      const panel = createInfoPanel({
+        description: interaction.options.getString("description"),
+        guildId: interaction.guild.id,
+        imageUrl: interaction.options.getString("image"),
+        rawSections: interaction.options.getString("sections"),
+        title: interaction.options.getString("title")
+      });
       const message = channel?.isTextBased()
         ? await channel.send({
-            embeds: [infoPanelEmbed(client)],
-            components: [infoPanelButtonRow()]
+            embeds: [buildPanelEmbed(client, panel)],
+            components: dynamicPanelButtonRows(panel)
           })
         : null;
 
