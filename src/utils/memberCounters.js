@@ -1,6 +1,7 @@
 const { ChannelType, PermissionFlagsBits } = require("discord.js");
 
 const updateTimers = new Map();
+const counterName = (label, count) => `${label}  ﹕  ${count}`;
 
 async function memberCounts(guild) {
   const members = await guild.members.fetch();
@@ -25,8 +26,8 @@ async function updateMemberCountersNow(client, guild) {
   if (!memberCount && !humanCount) return;
 
   const counts = await memberCounts(guild);
-  await renameCounterChannel(guild, memberCount, `members: ${counts.total}`);
-  await renameCounterChannel(guild, humanCount, `people: ${counts.humans}`);
+  await renameCounterChannel(guild, memberCount, counterName("members", counts.total));
+  await renameCounterChannel(guild, humanCount, counterName("people", counts.humans));
 }
 
 function scheduleMemberCounterUpdate(client, guild) {
@@ -62,8 +63,8 @@ async function createCounterChannel(guild, name) {
 
 async function createMemberCounters(client, guild) {
   const counts = await memberCounts(guild);
-  const totalChannel = await createCounterChannel(guild, `members: ${counts.total}`);
-  const humanChannel = await createCounterChannel(guild, `people: ${counts.humans}`);
+  const totalChannel = await createCounterChannel(guild, counterName("members", counts.total));
+  const humanChannel = await createCounterChannel(guild, counterName("people", counts.humans));
 
   client.config.channels.memberCount = totalChannel.id;
   client.config.channels.humanCount = humanChannel.id;
