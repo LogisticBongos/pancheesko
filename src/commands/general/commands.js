@@ -27,6 +27,7 @@ const commandGroups = [
       "`/setup colour-roles` - posts the colour role menu.",
       "`/setup activity-roles` - posts the activity ping role menu.",
       "`/setup platform-roles` - posts the pc/console role menu.",
+      "`/setup info-panel` - posts rules, faq, and info buttons.",
       "`/setup member-counters` - creates the member count voice channels.",
       "`/test-welcome` - sends a test welcome message to a channel.",
       "`/response` - makes, lists, and removes trigger replies.",

@@ -1,6 +1,7 @@
 const { Events } = require("discord.js");
 const { colors, logEmbed } = require("../utils/embeds");
 const { logModeration } = require("../utils/logging");
+const { INFO_PANEL_BUTTON_PREFIX, showInfoPanelResponse } = require("../utils/infoPanel");
 const { ROLE_GROUP_SELECT_PREFIX, updateRoleGroup } = require("../utils/roles");
 const { VERIFY_BUTTON_ID, verifyMember } = require("../utils/onboarding");
 
@@ -10,6 +11,11 @@ module.exports = {
     try {
       if (interaction.isButton() && interaction.customId === VERIFY_BUTTON_ID) {
         await verifyMember(interaction);
+        return;
+      }
+
+      if (interaction.isButton() && interaction.customId.startsWith(INFO_PANEL_BUTTON_PREFIX)) {
+        await showInfoPanelResponse(interaction, client);
         return;
       }
 

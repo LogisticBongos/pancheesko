@@ -54,6 +54,25 @@ const embedText = {
   verified: {
     title: "verified", // This becomes .setTitle("...") after someone verifies.
     description: "you are in. go pick your roles next."
+  },
+  infoPanel: {
+    title: "server info", // This becomes .setTitle("...") on the server info button panel.
+    description: "pick what you need below. only you will see the message that opens.",
+    rulesButtonLabel: "rules", // Button text for the rules popup.
+    faqButtonLabel: "faq", // Button text for the faq popup.
+    infoButtonLabel: "info" // Button text for the info popup.
+  },
+  infoPanelRules: {
+    title: "rules", // This becomes .setTitle("...") for the private rules message.
+    description: "be normal, be kind, and keep the server easy to hang out in."
+  },
+  infoPanelFaq: {
+    title: "faq", // This becomes .setTitle("...") for the private faq message.
+    description: "add common questions and answers here."
+  },
+  infoPanelInfo: {
+    title: "info", // This becomes .setTitle("...") for the private info message.
+    description: "add useful server info here."
   }
 };
 
@@ -144,6 +163,20 @@ function verifiedEmbed(client) {
   return applyText(baseEmbed(client, { color: colors.success }), embedText.verified);
 }
 
+function infoPanelEmbed(client) {
+  return applyText(baseEmbed(client, { color: colors.white }), embedText.infoPanel);
+}
+
+function infoPanelResponseEmbed(client, panelName) {
+  const textByPanel = {
+    faq: embedText.infoPanelFaq,
+    info: embedText.infoPanelInfo,
+    rules: embedText.infoPanelRules
+  };
+
+  return applyText(baseEmbed(client, { color: colors.info }), textByPanel[panelName]);
+}
+
 function logEmbed(client, title, description, color = colors.muted) {
   return baseEmbed(client, { color })
     .setTitle(title)
@@ -155,6 +188,8 @@ module.exports = {
   colors,
   embedText,
   introPromptEmbed,
+  infoPanelEmbed,
+  infoPanelResponseEmbed,
   logEmbed,
   roleGroupEmbed,
   rolesEmbed,

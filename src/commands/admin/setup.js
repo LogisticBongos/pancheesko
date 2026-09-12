@@ -1,5 +1,6 @@
-const { PermissionFlagsBits, SlashCommandBuilder } = require("discord.js");
-const { introPromptEmbed, roleGroupEmbed, verifyEmbed } = require("../../utils/embeds");
+const { ChannelType, PermissionFlagsBits, SlashCommandBuilder } = require("discord.js");
+const { infoPanelEmbed, introPromptEmbed, roleGroupEmbed, verifyEmbed } = require("../../utils/embeds");
+const { infoPanelButtonRow } = require("../../utils/infoPanel");
 const { verifyButtonRow } = require("../../utils/onboarding");
 const { rolePanel } = require("../../utils/roles");
 const { sendToChannel } = require("../../utils/logging");
@@ -37,6 +38,17 @@ module.exports = {
     )
     .addSubcommand((subcommand) =>
       subcommand
+        .setName("info-panel")
+        .setDescription("Post the rules, faq, and info button panel.")
+        .addChannelOption((option) =>
+          option
+            .setName("channel")
+            .setDescription("where to post it. defaults to this channel.")
+            .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
+        )
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
         .setName("member-counters")
         .setDescription("Create locked voice channels for member counts.")
     ),
@@ -55,6 +67,23 @@ module.exports = {
           `HUMAN_COUNT_CHANNEL_ID=${humanChannel.id}`,
           "```"
         ].join("\n")
+      );
+      return;
+    }
+
+    if (subcommand === "info-panel") {
+      const channel = interaction.options.getChannel("channel") || interaction.channel;
+      const message = channel?.isTextBased()
+        ? await channel.send({
+            embeds: [infoPanelEmbed(client)],
+            components: [infoPanelButtonRow()]
+          })
+        : null;
+
+      await interaction.editReply(
+        message
+          ? `posted server info panel in ${channel}.`
+          : "i could not post the server info panel there."
       );
       return;
     }
