@@ -1,6 +1,6 @@
 const { ChannelType, PermissionFlagsBits, SlashCommandBuilder } = require("discord.js");
 const { introPromptEmbed, roleGroupEmbed, verifyEmbed } = require("../../utils/embeds");
-const { buildPanelEmbed, createInfoPanel, dynamicPanelButtonRows } = require("../../utils/infoPanel");
+const { buildPanelEmbeds, createInfoPanel, dynamicPanelSelectRow } = require("../../utils/infoPanel");
 const { verifyButtonRow } = require("../../utils/onboarding");
 const { rolePanel } = require("../../utils/roles");
 const { sendToChannel } = require("../../utils/logging");
@@ -39,25 +39,18 @@ module.exports = {
     .addSubcommand((subcommand) =>
       subcommand
         .setName("info-panel")
-        .setDescription("Post a custom button panel with private replies.")
+        .setDescription("Post a custom server info dropdown with private replies.")
         .addStringOption((option) =>
           option
-            .setName("title")
-            .setDescription("panel embed title.")
-            .setMaxLength(256)
-            .setRequired(true)
-        )
-        .addStringOption((option) =>
-          option
-            .setName("description")
-            .setDescription("panel embed text.")
+            .setName("text")
+            .setDescription("welcome text shown below the header image.")
             .setMaxLength(4000)
             .setRequired(true)
         )
         .addStringOption((option) =>
           option
             .setName("sections")
-            .setDescription("json list of button sections.")
+            .setDescription("json list of dropdown sections.")
             .setMaxLength(4000)
             .setRequired(true)
         )
@@ -70,7 +63,7 @@ module.exports = {
         .addStringOption((option) =>
           option
             .setName("image")
-            .setDescription("optional image or gif url for the main panel.")
+            .setDescription("optional album cover image or gif url shown above the text.")
             .setMaxLength(2048)
         )
     )
@@ -101,16 +94,15 @@ module.exports = {
     if (subcommand === "info-panel") {
       const channel = interaction.options.getChannel("channel") || interaction.channel;
       const panel = createInfoPanel({
-        description: interaction.options.getString("description"),
         guildId: interaction.guild.id,
         imageUrl: interaction.options.getString("image"),
         rawSections: interaction.options.getString("sections"),
-        title: interaction.options.getString("title")
+        text: interaction.options.getString("text")
       });
       const message = channel?.isTextBased()
         ? await channel.send({
-            embeds: [buildPanelEmbed(client, panel)],
-            components: dynamicPanelButtonRows(panel)
+            embeds: buildPanelEmbeds(client, panel),
+            components: [dynamicPanelSelectRow(panel)]
           })
         : null;
 
